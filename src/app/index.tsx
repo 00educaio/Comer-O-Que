@@ -1,98 +1,204 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { Link, type Href } from 'expo-router';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  type ViewStyle,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { colors, radius, spacing, typography } from '@/theme/theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+type HomeOption = {
+  description: string;
+  emoji: string;
+  href: Href;
+  title: string;
+  tone: ViewStyle['backgroundColor'];
+};
+
+const homeOptions: HomeOption[] = [
+  {
+    title: 'Modo Entrevista',
+    description: 'Responda rapidinho e receba um bom palpite.',
+    emoji: '🎤',
+    href: '/interview',
+    tone: colors.pink,
+  },
+  {
+    title: 'Roleta',
+    description: 'Deixe a sorte escolher o prato de hoje.',
+    emoji: '🎡',
+    href: '/roulette',
+    tone: colors.yellow,
+  },
+  {
+    title: 'ModoMatch',
+    description: 'Escolham juntos, sem duelo de “tanto faz”.',
+    emoji: '💞',
+    href: '/match-coming-soon',
+    tone: colors.mint,
+  },
+];
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+        <View style={styles.hero}>
+          <View style={styles.logoBubble}>
+            <Text style={styles.logoEmoji}>🍽️</Text>
+          </View>
+          <Text style={styles.title}>Comer O Quê?</Text>
+          <Text style={styles.subtitle}>
+            A fome chegou e a ideia não? Escolha um jeito de desempatar.
+          </Text>
+        </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+        <View style={styles.options}>
+          {homeOptions.map((option, index) => (
+            <Link key={option.title} href={option.href} asChild>
+              <Pressable
+                accessibilityHint={`Abrir ${option.title}`}
+                accessibilityRole="button"
+                style={({ pressed }) => [
+                  styles.card,
+                  { backgroundColor: option.tone },
+                  pressed && styles.cardPressed,
+                ]}>
+                <View style={styles.cardEmojiBubble}>
+                  <Text style={styles.cardEmoji}>{option.emoji}</Text>
+                </View>
+                <View style={styles.cardCopy}>
+                  <View style={styles.cardTitleRow}>
+                    <Text style={styles.cardTitle}>{option.title}</Text>
+                    {index === 2 && <Text style={styles.badge}>EM BREVE</Text>}
+                  </View>
+                  <Text style={styles.cardDescription}>{option.description}</Text>
+                </View>
+                <Text style={styles.arrow}>›</Text>
+              </Pressable>
+            </Link>
+          ))}
+        </View>
       </SafeAreaView>
-    </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
+    backgroundColor: colors.background,
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+  },
+  content: {
+    flexGrow: 1,
   },
   safeArea: {
+    alignSelf: 'center',
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    maxWidth: 720,
+    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    width: '100%',
   },
-  heroSection: {
+  hero: {
     alignItems: 'center',
+    paddingBottom: spacing.xl,
+    paddingTop: spacing.xl,
+  },
+  logoBubble: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.primary,
+    borderRadius: radius.pill,
+    borderWidth: 3,
+    height: 88,
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    marginBottom: spacing.md,
+    transform: [{ rotate: '-4deg' }],
+    width: 88,
+  },
+  logoEmoji: {
+    fontSize: 48,
   },
   title: {
+    ...typography.title,
+    color: colors.primary,
     textAlign: 'center',
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    ...typography.body,
+    color: colors.textMuted,
+    marginTop: spacing.sm,
+    maxWidth: 430,
+    textAlign: 'center',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  options: {
+    gap: spacing.md,
+  },
+  card: {
+    alignItems: 'center',
+    borderColor: colors.cardBorder,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    boxShadow: '0 6px 8px rgba(125, 38, 49, 0.18)',
+    elevation: 4,
+    flexDirection: 'row',
+    gap: spacing.md,
+    minHeight: 132,
+    padding: spacing.lg,
+  },
+  cardPressed: {
+    opacity: 0.82,
+    transform: [{ scale: 0.98 }],
+  },
+  cardEmojiBubble: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceTranslucent,
+    borderRadius: radius.md,
+    height: 68,
+    justifyContent: 'center',
+    width: 68,
+  },
+  cardEmoji: {
+    fontSize: 38,
+  },
+  cardCopy: {
+    flex: 1,
+  },
+  cardTitleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  cardTitle: {
+    ...typography.heading,
+    color: colors.text,
+  },
+  badge: {
+    ...typography.caption,
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    color: colors.onPrimary,
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  cardDescription: {
+    ...typography.body,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
+  arrow: {
+    color: colors.primary,
+    fontSize: 40,
+    fontWeight: '900',
   },
 });
