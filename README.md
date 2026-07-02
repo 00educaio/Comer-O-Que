@@ -1,56 +1,97 @@
-# Welcome to your Expo app 👋
+# Comer O Quê?
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile para ajudar quem está com fome, mas não consegue decidir o que comer.
 
-## Get started
+O MVP terá dois modos de escolha:
 
-1. Install dependencies
+- **Modo Entrevista:** perguntas rápidas para sugerir pratos.
+- **Roleta:** sorteio entre categorias e comidas.
 
-   ```bash
-   npm install
-   ```
+O **ModoMatch**, para decidir em grupo, aparece no aplicativo como uma funcionalidade futura.
 
-2. Start the app
+## Tecnologias
 
-   ```bash
-   npx expo start
-   ```
+- Expo SDK 57
+- React Native 0.86
+- React 19
+- TypeScript
+- Expo Router
+- Supabase
 
-In the output, you'll find options to open the app in a
+## Requisitos
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js 22.13 ou superior, ainda dentro da versão 22
+- npm
+- Expo Go ou um emulador Android/iOS
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+O projeto fixa a versão recomendada no arquivo `.nvmrc`. Com o NVM:
 
 ```bash
-npm run reset-project
+nvm install
+nvm use
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Instalação
 
-### Other setup steps
+Clone o repositório e instale as dependências:
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+```bash
+npm install
+```
 
-## Learn more
+Crie um arquivo `.env` na raiz:
 
-To learn more about developing your project with Expo, look at the following resources:
+```env
+EXPO_PUBLIC_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=SUA_CHAVE_PUBLICA
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Use somente a chave pública no aplicativo. Nunca adicione uma `service_role` ao cliente mobile.
 
-## Join the community
+## Executando o aplicativo
 
-Join our community of developers creating universal apps.
+Inicie o servidor de desenvolvimento:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npm start
+```
+
+Atalhos disponíveis:
+
+```bash
+npm run android
+npm run ios
+npm run web
+```
+
+## Estrutura principal
+
+```text
+src/
+├── app/            # Rotas e telas do Expo Router
+├── data/           # Catálogo local de fallback
+├── lib/            # Integrações, como Supabase e mapas
+├── services/       # Regras de acesso aos dados
+├── theme/          # Cores, espaçamentos e tipografia
+└── types/          # Tipos compartilhados
+```
+
+As rotas atuais são:
+
+- `/` — Home
+- `/interview` — Modo Entrevista
+- `/roulette` — Roleta
+- `/match-coming-soon` — aviso do ModoMatch
+
+## Validação
+
+Verifique os tipos e a compatibilidade das dependências:
+
+```bash
+npx tsc --noEmit
+npx expo install --check
+```
+
+## Estado do projeto
+
+A fundação visual e a navegação estão prontas. As regras completas da entrevista, da roleta e o carregamento remoto do catálogo serão implementados nas próximas fases do roadmap.
