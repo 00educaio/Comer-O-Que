@@ -1,0 +1,1 @@
+-- Initial catalog data will be added in Task 2.4.
