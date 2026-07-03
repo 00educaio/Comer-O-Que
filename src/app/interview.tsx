@@ -1,6 +1,6 @@
+import { Image } from 'expo-image';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {
+  ErrorIllustration,
+  LoadingIllustration,
+} from '@/components/feedback-illustration';
 import { interviewQuestions } from '@/data/interviewQuestions';
 import { openNearbyPlaces } from '@/lib/maps';
 import { getCatalog } from '@/services/catalogService';
@@ -151,13 +155,13 @@ export default function InterviewScreen() {
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
         {isLoading ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <ActivityIndicator color={colors.primary} size="large" />
+            <LoadingIllustration />
             <Text style={styles.feedbackTitle}>Arrumando as perguntas...</Text>
             <Text style={styles.feedbackText}>É rapidinho, prometemos.</Text>
           </View>
         ) : catalogError ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <Text style={styles.feedbackEmoji}>🍽️</Text>
+            <ErrorIllustration />
             <Text style={styles.feedbackTitle}>A cozinha se atrapalhou</Text>
             <Text style={styles.feedbackText}>{catalogError}</Text>
             <Pressable
@@ -227,7 +231,16 @@ export default function InterviewScreen() {
         ) : currentQuestion ? (
           <View style={styles.interview}>
             <View style={styles.header}>
-              <Text style={styles.headerEmoji}>🎤</Text>
+              {currentQuestionIndex === 0 ? (
+                <Image
+                  accessible={false}
+                  contentFit="cover"
+                  source={require('../../assets/images/ComerOQue/mode-interview-illustration.png')}
+                  style={styles.modeIllustration}
+                />
+              ) : (
+                <Text style={styles.headerEmoji}>🎤</Text>
+              )}
               <Text accessibilityRole="header" style={styles.title}>
                 Conta pra gente
               </Text>
@@ -389,6 +402,13 @@ const styles = StyleSheet.create({
   },
   headerEmoji: {
     fontSize: 52,
+  },
+  modeIllustration: {
+    borderColor: colors.cardBorder,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    height: 240,
+    width: '100%',
   },
   title: {
     ...typography.title,

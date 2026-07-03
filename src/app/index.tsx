@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { Link, type Href } from 'expo-router';
 import {
   Pressable,
@@ -54,17 +55,26 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.hero}>
           <View
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-            style={styles.logoBubble}>
-            <Text style={styles.logoEmoji}>🍽️</Text>
+            accessible
+            accessibilityLabel="Comer O Quê?"
+            accessibilityRole="header"
+            style={styles.logoWrapper}>
+            <Image
+              accessible={false}
+              contentFit="contain"
+              source={require('../../assets/images/ComerOQue/logo-horizontal-comer-o-que.png')}
+              style={styles.logo}
+            />
           </View>
-          <Text accessibilityRole="header" style={styles.title}>
-            Comer O Quê?
-          </Text>
           <Text style={styles.subtitle}>
             A fome chegou e a ideia não? Escolha um jeito de desempatar.
           </Text>
+          <Image
+            accessible={false}
+            contentFit="cover"
+            source={require('../../assets/images/ComerOQue/home-hero.png')}
+            style={styles.heroImage}
+          />
         </View>
 
         <View style={styles.options}>
@@ -121,27 +131,16 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     paddingBottom: spacing.xl,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.md,
   },
-  logoBubble: {
+  logoWrapper: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.primary,
-    borderRadius: radius.pill,
-    borderWidth: 3,
-    height: 88,
-    justifyContent: 'center',
-    marginBottom: spacing.md,
-    transform: [{ rotate: '-4deg' }],
-    width: 88,
+    width: '100%',
   },
-  logoEmoji: {
-    fontSize: 48,
-  },
-  title: {
-    ...typography.title,
-    color: colors.primary,
-    textAlign: 'center',
+  logo: {
+    aspectRatio: 3,
+    maxWidth: 440,
+    width: '100%',
   },
   subtitle: {
     ...typography.body,
@@ -149,6 +148,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     maxWidth: 430,
     textAlign: 'center',
+  },
+  heroImage: {
+    aspectRatio: 1122 / 1402,
+    borderRadius: radius.lg,
+    marginTop: spacing.lg,
+    maxWidth: 360,
+    width: '100%',
   },
   options: {
     gap: spacing.md,

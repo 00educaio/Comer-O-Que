@@ -1,6 +1,6 @@
+import { Image } from 'expo-image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {
+  ErrorIllustration,
+  LoadingIllustration,
+} from '@/components/feedback-illustration';
 import { openNearbyPlaces } from '@/lib/maps';
 import { drawWeightedFood } from '@/lib/roulette';
 import { getCatalog } from '@/services/catalogService';
@@ -183,7 +187,12 @@ export default function RouletteScreen() {
       showsVerticalScrollIndicator={false}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.headerEmoji}>🎡</Text>
+          <Image
+            accessible={false}
+            contentFit="cover"
+            source={require('../../assets/images/ComerOQue/mode-roulette-illustration.png')}
+            style={styles.modeIllustration}
+          />
           <Text accessibilityRole="header" style={styles.title}>
             Qual é a fome de hoje?
           </Text>
@@ -194,13 +203,13 @@ export default function RouletteScreen() {
 
         {isLoading ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <ActivityIndicator color={colors.primary} size="large" />
+            <LoadingIllustration />
             <Text style={styles.feedbackTitle}>Preparando as roletas...</Text>
             <Text style={styles.feedbackText}>Já já a sorte entra em ação.</Text>
           </View>
         ) : catalogError ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <Text style={styles.feedbackEmoji}>🍽️</Text>
+            <ErrorIllustration />
             <Text style={styles.feedbackTitle}>Ops, a mesa ainda não está pronta</Text>
             <Text style={styles.feedbackText}>{catalogError}</Text>
             <Pressable
@@ -392,8 +401,12 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
     paddingTop: spacing.lg,
   },
-  headerEmoji: {
-    fontSize: 50,
+  modeIllustration: {
+    borderColor: colors.cardBorder,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    height: 260,
+    width: '100%',
   },
   title: {
     ...typography.heading,
@@ -416,9 +429,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: spacing.xl,
     ...shadows.card,
-  },
-  feedbackEmoji: {
-    fontSize: 48,
   },
   feedbackTitle: {
     ...typography.heading,

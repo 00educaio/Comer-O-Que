@@ -682,7 +682,7 @@ Requisitos:
 
 ## 8. Fase 7 — ModoMatch em breve
 
-### Task 7.1 — Tela simples
+### [x] Task 7.1 — Tela simples
 
 Prompt:
 
