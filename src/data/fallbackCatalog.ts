@@ -1,4 +1,218 @@
-import type { RouletteGroup } from '@/types/catalog';
+import type { Food, RouletteGroup, RouletteGroupFood } from '@/types/catalog';
+
+function createFood(
+  id: string,
+  food: Omit<Food, 'id' | 'assetKey'>,
+): Food {
+  return {
+    id: `fallback-food-${id}`,
+    assetKey: null,
+    ...food,
+  };
+}
+
+function rouletteFood(food: Food, weight: number): RouletteGroupFood {
+  return { food, weight };
+}
+
+const foods = {
+  brigadeiro: createFood('brigadeiro', {
+    name: 'Brigadeiro',
+    description: 'Pequeno no tamanho, gigante na vontade de repetir.',
+    emoji: '🍫',
+    searchQuery: 'Brigadeiro perto de mim',
+    tags: ['doce', 'fome-pequena', 'frio', 'barato', 'rapido', 'brasileira', 'vegetariano'],
+  }),
+  pudimDeLeite: createFood('pudim-de-leite', {
+    name: 'Pudim de leite',
+    description: 'Lisinho, caramelizado e sem espaço para indecisão.',
+    emoji: '🍮',
+    searchQuery: 'Pudim de leite perto de mim',
+    tags: ['doce', 'fome-pequena', 'frio', 'elaborado', 'brasileira', 'vegetariano'],
+  }),
+  boloDeChocolate: createFood('bolo-de-chocolate', {
+    name: 'Bolo de chocolate',
+    description: 'Uma fatia capaz de melhorar qualquer reunião.',
+    emoji: '🍰',
+    searchQuery: 'Bolo de chocolate perto de mim',
+    tags: ['doce', 'fome-media', 'pesado', 'barato', 'brasileira', 'vegetariano'],
+  }),
+  acaiNaTigela: createFood('acai-na-tigela', {
+    name: 'Açaí na tigela',
+    description: 'Gelado, colorido e pronto para receber acompanhamentos.',
+    emoji: '🫐',
+    searchQuery: 'Açaí na tigela perto de mim',
+    tags: ['doce', 'fome-media', 'frio', 'leve', 'rapido', 'brasileira', 'vegetariano'],
+  }),
+  churros: createFood('churros', {
+    name: 'Churros',
+    description: 'Crocante por fora e recheado de felicidade.',
+    emoji: '🥖',
+    searchQuery: 'Churros perto de mim',
+    tags: ['doce', 'fome-pequena', 'quente', 'pesado', 'barato', 'rapido', 'estrangeira', 'vegetariano'],
+  }),
+  sorvete: createFood('sorvete', {
+    name: 'Sorvete',
+    description: 'A resposta gelada para qualquer dia quente.',
+    emoji: '🍨',
+    searchQuery: 'Sorvete perto de mim',
+    tags: ['doce', 'fome-pequena', 'frio', 'leve', 'rapido', 'estrangeira', 'vegetariano'],
+  }),
+  brownie: createFood('brownie', {
+    name: 'Brownie',
+    description: 'Chocolate intenso com o centro bem macio.',
+    emoji: '🍫',
+    searchQuery: 'Brownie perto de mim',
+    tags: ['doce', 'fome-pequena', 'pesado', 'rapido', 'estrangeira', 'vegetariano'],
+  }),
+  cheesecake: createFood('cheesecake', {
+    name: 'Cheesecake',
+    description: 'Cremoso, elegante e com pose de sobremesa chique.',
+    emoji: '🍰',
+    searchQuery: 'Cheesecake perto de mim',
+    tags: ['doce', 'fome-pequena', 'frio', 'pesado', 'elaborado', 'estrangeira', 'vegetariano'],
+  }),
+  hamburguerArtesanal: createFood('hamburguer-artesanal', {
+    name: 'Hambúrguer artesanal',
+    description: 'Alto, suculento e impossível de comer com elegância.',
+    emoji: '🍔',
+    searchQuery: 'Hambúrguer artesanal perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'rapido', 'estrangeira'],
+  }),
+  pizza: createFood('pizza', {
+    name: 'Pizza',
+    description: 'Redonda, democrática e sempre pronta para salvar a noite.',
+    emoji: '🍕',
+    searchQuery: 'Pizza perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'rapido', 'estrangeira'],
+  }),
+  churrasco: createFood('churrasco', {
+    name: 'Churrasco',
+    description: 'Carne na brasa e conversa que dura a tarde inteira.',
+    emoji: '🥩',
+    searchQuery: 'Churrasco perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'brasileira'],
+  }),
+  feijoada: createFood('feijoada', {
+    name: 'Feijoada',
+    description: 'Um clássico brasileiro que chega ocupando a mesa.',
+    emoji: '🍲',
+    searchQuery: 'Feijoada perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'brasileira'],
+  }),
+  lasanha: createFood('lasanha', {
+    name: 'Lasanha',
+    description: 'Camadas de massa, molho e decisões muito acertadas.',
+    emoji: '🍝',
+    searchQuery: 'Lasanha perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'estrangeira'],
+  }),
+  strogonoffDeFrango: createFood('strogonoff-de-frango', {
+    name: 'Strogonoff de frango',
+    description: 'Cremoso, querido e sempre acompanhado de batata palha.',
+    emoji: '🍛',
+    searchQuery: 'Strogonoff de frango perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'rapido', 'brasileira'],
+  }),
+  escondidinhoDeCarneSeca: createFood('escondidinho-de-carne-seca', {
+    name: 'Escondidinho de carne-seca',
+    description: 'Purê por cima, recheio caprichado por baixo.',
+    emoji: '🥘',
+    searchQuery: 'Escondidinho de carne-seca perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'brasileira'],
+  }),
+  baiaoDeDois: createFood('baiao-de-dois', {
+    name: 'Baião de dois',
+    description: 'Arroz e feijão juntos num encontro cheio de sabor.',
+    emoji: '🍛',
+    searchQuery: 'Baião de dois perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'barato', 'brasileira'],
+  }),
+  moqueca: createFood('moqueca', {
+    name: 'Moqueca',
+    description: 'Panela perfumada, caldo rico e arroz esperando ao lado.',
+    emoji: '🐟',
+    searchQuery: 'Moqueca perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'brasileira'],
+  }),
+  acaraje: createFood('acaraje', {
+    name: 'Acarajé',
+    description: 'Crocante, apimentado e cheio de personalidade baiana.',
+    emoji: '🫘',
+    searchQuery: 'Acarajé perto de mim',
+    tags: ['salgado', 'fome-media', 'quente', 'pesado', 'rapido', 'brasileira'],
+  }),
+  tapiocaRecheada: createFood('tapioca-recheada', {
+    name: 'Tapioca recheada',
+    description: 'Versátil, ligeira e com recheio para todo humor.',
+    emoji: '🫓',
+    searchQuery: 'Tapioca recheada perto de mim',
+    tags: ['salgado', 'fome-media', 'quente', 'leve', 'barato', 'rapido', 'brasileira'],
+  }),
+  cuscuzNordestino: createFood('cuscuz-nordestino', {
+    name: 'Cuscuz nordestino',
+    description: 'Macio, quentinho e pronto para qualquer acompanhamento.',
+    emoji: '🌽',
+    searchQuery: 'Cuscuz nordestino perto de mim',
+    tags: ['salgado', 'fome-media', 'quente', 'leve', 'barato', 'rapido', 'brasileira', 'vegetariano'],
+  }),
+  cuscuzComCarneDeSol: createFood('cuscuz-com-carne-de-sol', {
+    name: 'Cuscuz com carne de sol',
+    description: 'Flocão macio com um reforço bem nordestino.',
+    emoji: '🍲',
+    searchQuery: 'Cuscuz com carne de sol perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'barato', 'brasileira'],
+  }),
+  paoDeQueijo: createFood('pao-de-queijo', {
+    name: 'Pão de queijo',
+    description: 'Crocante por fora, elástico por dentro e difícil de parar.',
+    emoji: '🧀',
+    searchQuery: 'Pão de queijo perto de mim',
+    tags: ['salgado', 'fome-pequena', 'quente', 'leve', 'barato', 'rapido', 'brasileira', 'vegetariano'],
+  }),
+  burrito: createFood('burrito', {
+    name: 'Burrito',
+    description: 'Um pacote generoso de recheio e tempero.',
+    emoji: '🌯',
+    searchQuery: 'Burrito perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'rapido', 'estrangeira'],
+  }),
+  yakisoba: createFood('yakisoba', {
+    name: 'Yakisoba',
+    description: 'Macarrão, legumes e molho disputando cada garfada.',
+    emoji: '🍜',
+    searchQuery: 'Yakisoba perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'rapido', 'estrangeira'],
+  }),
+  sushiCombinado: createFood('sushi-combinado', {
+    name: 'Sushi combinado',
+    description: 'Um pouco de cada peça para ninguém precisar escolher.',
+    emoji: '🍣',
+    searchQuery: 'Sushi combinado perto de mim',
+    tags: ['salgado', 'fome-grande', 'frio', 'leve', 'elaborado', 'estrangeira'],
+  }),
+  padThai: createFood('pad-thai', {
+    name: 'Pad thai',
+    description: 'Macarrão agridoce com crocância e perfume tailandês.',
+    emoji: '🍜',
+    searchQuery: 'Pad thai perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'leve', 'elaborado', 'estrangeira'],
+  }),
+  ramen: createFood('ramen', {
+    name: 'Ramen',
+    description: 'Caldo fumegante e macarrão para sorver sem cerimônia.',
+    emoji: '🍜',
+    searchQuery: 'Ramen perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'estrangeira'],
+  }),
+  curryIndiano: createFood('curry-indiano', {
+    name: 'Curry indiano',
+    description: 'Especiarias, molho encorpado e perfume pela mesa toda.',
+    emoji: '🍛',
+    searchQuery: 'Curry indiano perto de mim',
+    tags: ['salgado', 'fome-grande', 'quente', 'pesado', 'elaborado', 'estrangeira'],
+  }),
+};
 
 export const fallbackCatalog: RouletteGroup[] = [
   {
@@ -7,7 +221,16 @@ export const fallbackCatalog: RouletteGroup[] = [
     slug: 'sobremesa',
     description: 'Para quando sempre cabe um docinho.',
     emoji: '🍰',
-    foods: [],
+    foods: [
+      rouletteFood(foods.brigadeiro, 3),
+      rouletteFood(foods.pudimDeLeite, 3),
+      rouletteFood(foods.boloDeChocolate, 3),
+      rouletteFood(foods.acaiNaTigela, 3),
+      rouletteFood(foods.churros, 3),
+      rouletteFood(foods.sorvete, 3),
+      rouletteFood(foods.brownie, 2),
+      rouletteFood(foods.cheesecake, 2),
+    ],
   },
   {
     id: 'fome-grande',
@@ -15,7 +238,16 @@ export const fallbackCatalog: RouletteGroup[] = [
     slug: 'fome-grande',
     description: 'Pratos que resolvem uma fome de respeito.',
     emoji: '🍔',
-    foods: [],
+    foods: [
+      rouletteFood(foods.hamburguerArtesanal, 3),
+      rouletteFood(foods.pizza, 3),
+      rouletteFood(foods.churrasco, 3),
+      rouletteFood(foods.feijoada, 3),
+      rouletteFood(foods.lasanha, 3),
+      rouletteFood(foods.strogonoffDeFrango, 3),
+      rouletteFood(foods.escondidinhoDeCarneSeca, 2),
+      rouletteFood(foods.baiaoDeDois, 2),
+    ],
   },
   {
     id: 'regional',
@@ -23,7 +255,16 @@ export const fallbackCatalog: RouletteGroup[] = [
     slug: 'regional',
     description: 'Sabores brasileiros para matar a saudade.',
     emoji: '🇧🇷',
-    foods: [],
+    foods: [
+      rouletteFood(foods.feijoada, 3),
+      rouletteFood(foods.baiaoDeDois, 3),
+      rouletteFood(foods.moqueca, 3),
+      rouletteFood(foods.acaraje, 3),
+      rouletteFood(foods.tapiocaRecheada, 3),
+      rouletteFood(foods.cuscuzNordestino, 3),
+      rouletteFood(foods.cuscuzComCarneDeSol, 3),
+      rouletteFood(foods.paoDeQueijo, 3),
+    ],
   },
   {
     id: 'estrangeira',
@@ -31,6 +272,15 @@ export const fallbackCatalog: RouletteGroup[] = [
     slug: 'estrangeira',
     description: 'Uma pequena viagem sem sair da mesa.',
     emoji: '🌍',
-    foods: [],
+    foods: [
+      rouletteFood(foods.pizza, 3),
+      rouletteFood(foods.lasanha, 3),
+      rouletteFood(foods.burrito, 3),
+      rouletteFood(foods.yakisoba, 3),
+      rouletteFood(foods.sushiCombinado, 3),
+      rouletteFood(foods.padThai, 2),
+      rouletteFood(foods.ramen, 3),
+      rouletteFood(foods.curryIndiano, 2),
+    ],
   },
 ];

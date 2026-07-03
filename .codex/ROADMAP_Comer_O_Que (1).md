@@ -335,7 +335,7 @@ Critério de pronto:
 O arquivo supabase/seed.sql existe e contém roletas, comidas, tags e vínculos.
 ```
 
-### Task 2.5 — Testar banco local com migrations e seed
+### [x] Task 2.5 — Testar banco local com migrations e seed
 
 Com Docker aberto, execute:
 
@@ -352,7 +352,7 @@ Critério de pronto:
 - O Supabase Studio local mostra as tabelas foods, food_tags, roulette_groups e roulette_group_foods populadas.
 ```
 
-### Task 2.6 — Linkar projeto remoto do Supabase
+### [x] Task 2.6 — Linkar projeto remoto do Supabase
 
 Depois que o local estiver funcionando, conecte ao projeto remoto:
 
@@ -367,7 +367,7 @@ Critério de pronto:
 O projeto local está linkado ao projeto remoto correto.
 ```
 
-### Task 2.7 — Enviar migrations e seed para o Supabase remoto
+### [x] Task 2.7 — Enviar migrations e seed para o Supabase remoto
 
 Execute:
 
