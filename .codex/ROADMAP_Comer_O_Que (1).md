@@ -414,7 +414,7 @@ Requisitos:
 
 ## 4. Fase 3 — Carregamento de catálogo no app
 
-### Task 3.1 — Tipos e fallback local
+### [x] Task 3.1 — Tipos e fallback local
 
 Prompt para o Codex:
 
@@ -433,7 +433,7 @@ Requisitos:
 - Manter search_query em cada comida.
 ```
 
-### Task 3.2 — Supabase client
+### [x] Task 3.2 — Supabase client
 
 Prompt:
 
@@ -453,7 +453,7 @@ Requisitos:
 - Não usar service role key.
 ```
 
-### Task 3.3 — Catalog service com cache
+### [x] Task 3.3 — Catalog service com cache
 
 Prompt:
 
@@ -480,7 +480,7 @@ Requisitos:
 
 ## 5. Fase 4 — Home e identidade visual
 
-### Task 4.1 — Tema visual
+### [x] Task 4.1 — Tema visual
 
 Prompt:
 
@@ -507,7 +507,7 @@ Exportar:
 - typography
 ```
 
-### Task 4.2 — Home
+### [x] Task 4.2 — Home
 
 Prompt:
 
@@ -532,7 +532,7 @@ Requisitos:
 
 ## 6. Fase 5 — Roleta
 
-### Task 5.1 — Seleção das quatro roletas
+### [x] Task 5.1 — Seleção das quatro roletas
 
 Prompt:
 
@@ -551,10 +551,11 @@ Requisitos:
   4. Culinária estrangeira
 - Cada card deve ter emoji, nome e descrição.
 - Ao tocar em um card, selecionar aquela roleta.
+- Permitir visualizar as comidas da roleta selecionada.
 - Mostrar estados de loading e erro/fallback de forma amigável.
 ```
 
-### Task 5.2 — Sorteio ponderado
+### [x] Task 5.2 — Sorteio ponderado
 
 Prompt:
 
@@ -569,7 +570,7 @@ Requisitos:
 - Se a roleta estiver vazia, mostrar mensagem amigável.
 ```
 
-### Task 5.3 — Suspense simples
+### [x] Task 5.3 — Suspense simples
 
 Prompt:
 
@@ -578,7 +579,7 @@ Implemente a experiência de suspense da Roleta.
 
 Requisitos:
 - Não criar roleta circular.
-- Ao tocar em "Girar", alternar rapidamente entre emojis/nomes por cerca de 1,5 segundo.
+- Ao tocar em "Girar", alternar rapidamente entre emojis/nomes por cerca de 3,5 segundos.
 - Desabilitar o botão durante o sorteio.
 - No fim, mostrar resultado final.
 - Mostrar:
@@ -592,7 +593,7 @@ Requisitos:
 - Não adicionar biblioteca de animação.
 ```
 
-### Task 5.4 — Ver lugares próximos
+### [x] Task 5.4 — Ver lugares próximos
 
 Prompt:
 

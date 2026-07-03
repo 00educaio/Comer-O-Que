@@ -29,6 +29,13 @@ export const radius = {
   pill: 999,
 } as const;
 
+export const shadows = {
+  card: {
+    boxShadow: '0 6px 8px rgba(125, 38, 49, 0.18)',
+    elevation: 4,
+  },
+} as const;
+
 export const typography = {
   title: {
     fontSize: 38,

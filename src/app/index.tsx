@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { colors, radius, spacing, typography } from '@/theme/theme';
+import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
 
 type HomeOption = {
   description: string;
   emoji: string;
   href: Href;
+  isComingSoon?: boolean;
   title: string;
   tone: ViewStyle['backgroundColor'];
 };
@@ -39,6 +40,7 @@ const homeOptions: HomeOption[] = [
     description: 'Escolham juntos, sem duelo de “tanto faz”.',
     emoji: '💞',
     href: '/match-coming-soon',
+    isComingSoon: true,
     tone: colors.mint,
   },
 ];
@@ -51,33 +53,42 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.hero}>
-          <View style={styles.logoBubble}>
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={styles.logoBubble}>
             <Text style={styles.logoEmoji}>🍽️</Text>
           </View>
-          <Text style={styles.title}>Comer O Quê?</Text>
+          <Text accessibilityRole="header" style={styles.title}>
+            Comer O Quê?
+          </Text>
           <Text style={styles.subtitle}>
             A fome chegou e a ideia não? Escolha um jeito de desempatar.
           </Text>
         </View>
 
         <View style={styles.options}>
-          {homeOptions.map((option, index) => (
+          {homeOptions.map((option) => (
             <Link key={option.title} href={option.href} asChild>
               <Pressable
-                accessibilityHint={`Abrir ${option.title}`}
+                accessibilityHint={option.description}
+                accessibilityLabel={`${option.title}${option.isComingSoon ? ', em breve' : ''}`}
                 accessibilityRole="button"
                 style={({ pressed }) => [
                   styles.card,
                   { backgroundColor: option.tone },
                   pressed && styles.cardPressed,
                 ]}>
-                <View style={styles.cardEmojiBubble}>
+                <View
+                  accessibilityElementsHidden
+                  importantForAccessibility="no-hide-descendants"
+                  style={styles.cardEmojiBubble}>
                   <Text style={styles.cardEmoji}>{option.emoji}</Text>
                 </View>
                 <View style={styles.cardCopy}>
                   <View style={styles.cardTitleRow}>
                     <Text style={styles.cardTitle}>{option.title}</Text>
-                    {index === 2 && <Text style={styles.badge}>EM BREVE</Text>}
+                    {option.isComingSoon && <Text style={styles.badge}>EM BREVE</Text>}
                   </View>
                   <Text style={styles.cardDescription}>{option.description}</Text>
                 </View>
@@ -147,12 +158,11 @@ const styles = StyleSheet.create({
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
-    boxShadow: '0 6px 8px rgba(125, 38, 49, 0.18)',
-    elevation: 4,
     flexDirection: 'row',
     gap: spacing.md,
     minHeight: 132,
     padding: spacing.lg,
+    ...shadows.card,
   },
   cardPressed: {
     opacity: 0.82,

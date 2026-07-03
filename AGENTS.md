@@ -46,8 +46,9 @@ O MVP inclui:
 - Catálogo e configuração lidos do Supabase.
 - Cache local e fallback para o app continuar útil sem internet ou sem Supabase.
 - Quatro grupos de roleta: sobremesa, fome grande, culinária regional e culinária
-  estrangeira.
-- Sorteio ponderado por `weight`, com suspense curto e sem roleta circular.
+  estrangeira, com visualização das opções de cada grupo.
+- Sorteio ponderado por `weight`, com suspense de cerca de 3,5 segundos e sem
+  roleta circular.
 - Modo Entrevista local, baseado em perguntas fixas, tags e pontuação, sem IA
   externa.
 - Botão **Ver lugares próximos**, abrindo uma busca do Google Maps por URL.
@@ -191,6 +192,8 @@ Ao implementar:
 - Preserve compatibilidade com o SDK e com a arquitetura atual.
 - Inclua estados de erro e vazio quando a mudança envolver dados.
 - Atualize tipos, fallback, migrations e documentação quando a mudança exigir.
+- Ao finalizar uma task do roadmap, marque seu título como concluído com `[x]`
+  no próprio roadmap, na mesma entrega.
 - Não faça operações remotas, publique ou envie alterações sem autorização.
 
 ## Critérios de qualidade
