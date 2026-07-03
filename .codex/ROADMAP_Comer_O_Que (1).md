@@ -142,7 +142,7 @@ teste local → npx supabase db reset
 deploy remoto → npx supabase db push --include-seed
 ```
 
-### Task 2.1 — Instalar Supabase CLI como dependência de desenvolvimento
+### [x] Task 2.1 — Instalar Supabase CLI como dependência de desenvolvimento
 
 Execute dentro da raiz do projeto:
 
@@ -165,7 +165,7 @@ Critério de pronto:
 npx supabase --version
 ```
 
-### Task 2.2 — Inicializar Supabase no projeto
+### [x] Task 2.2 — Inicializar Supabase no projeto
 
 Execute:
 
@@ -188,7 +188,7 @@ Critério de pronto:
 A pasta supabase/ existe e será versionada no Git.
 ```
 
-### Task 2.3 — Criar migration do schema de catálogo
+### [x] Task 2.3 — Criar migration do schema de catálogo
 
 Execute:
 
@@ -274,7 +274,7 @@ Critério de pronto:
 A migration existe dentro de supabase/migrations/ e contém todo o schema inicial.
 ```
 
-### Task 2.4 — Criar seed.sql com catálogo inicial
+### [x] Task 2.4 — Criar seed.sql com catálogo inicial
 
 O catálogo inicial fica em:
 
