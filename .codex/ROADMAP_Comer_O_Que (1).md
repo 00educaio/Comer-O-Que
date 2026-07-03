@@ -618,7 +618,7 @@ Requisitos:
 
 ## 7. Fase 6 — Modo Entrevista
 
-### Task 6.1 — Definir perguntas fixas
+### [x] Task 6.1 — Definir perguntas fixas
 
 Minha recomendação para o MVP: 8 perguntas fixas.
 
@@ -635,7 +635,7 @@ Perguntas iniciais:
 8. Tem alguma restrição importante?
 ```
 
-### Task 6.2 — Modelo de pontuação por tags
+### [x] Task 6.2 — Modelo de pontuação por tags
 
 Prompt:
 
@@ -657,7 +657,7 @@ Requisitos:
 - Não usar backend para calcular.
 ```
 
-### Task 6.3 — UI da entrevista
+### [x] Task 6.3 — UI da entrevista
 
 Prompt:
 
