@@ -9,13 +9,16 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { AmbientBackground } from '@/components/ui/ambient-background';
 import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
 
 const howItWorks = [
-  { emoji: '🧑‍🍳', text: 'Cada pessoa entra com um apelido temporário.' },
-  { emoji: '💌', text: 'Compartilhe o código da sala ou o convite por link.' },
-  { emoji: '👍', text: 'Quando os dois curtirem a mesma comida, deu match.' },
+  { emoji: '🧑‍🍳', text: 'Cada pessoa entra com apelido temporário e sem login.' },
+  { emoji: '💌', text: 'O convite funciona por código curto e por link compartilhável.' },
+  { emoji: '👍', text: 'Quando os dois curtem a mesma comida, o match aparece na hora.' },
 ] as const;
+
+const quickFacts = ['Feito para 2 pessoas', 'Sala expira em 2 horas', 'Rodada continua após o match'];
 
 export default function MatchIndexScreen() {
   return (
@@ -24,64 +27,85 @@ export default function MatchIndexScreen() {
       showsVerticalScrollIndicator={false}
       style={styles.screen}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <Image
-          accessible={false}
-          contentFit="cover"
-          source={require('../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png')}
-          style={styles.heroImage}
-        />
-
-        <Text accessibilityRole="header" style={styles.title}>
-          ModoMatch
-        </Text>
-        <Text style={styles.subtitle}>
-          Escolha comida junto com outra pessoa. Cada um vota nos cards e o prato
-          só vence quando os dois disserem “Gostei”.
-        </Text>
-
-        <View style={styles.stepsCard}>
-          {howItWorks.map((step) => (
-            <View key={step.text} style={styles.stepRow}>
-              <View style={styles.stepEmojiBubble}>
-                <Text style={styles.stepEmoji}>{step.emoji}</Text>
-              </View>
-              <Text style={styles.stepText}>{step.text}</Text>
+        <AmbientBackground style={styles.ambient} tone="match">
+          <View style={styles.heroCard}>
+            <View style={styles.heroBadge}>
+              <Text style={styles.heroBadgeText}>ModoMatch online</Text>
             </View>
-          ))}
-        </View>
 
-        <View style={styles.noticeCard}>
-          <Text style={styles.noticeTitle}>V1 feita para 2 pessoas</Text>
-          <Text style={styles.noticeText}>
-            Sem login, com apelido temporário e sala online pelo Supabase.
-          </Text>
-        </View>
+            <Image
+              accessible={false}
+              contentFit="contain"
+              source={require('../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png')}
+              style={styles.heroImage}
+            />
 
-        <View style={styles.actions}>
-          <Link href="/match/create" asChild>
-            <Pressable
-              accessibilityHint="Abre a criação de uma nova sala"
-              accessibilityRole="button"
-              style={({ pressed }) => [
-                styles.primaryButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.primaryButtonText}>Criar sala</Text>
-            </Pressable>
-          </Link>
+            <Text accessibilityRole="header" style={styles.title}>
+              Decidir em dupla agora tem cara de produto de verdade.
+            </Text>
+            <Text style={styles.subtitle}>
+              Convide outra pessoa, votem nos cards e deixem a rodada seguir até pintar
+              mais de um match.
+            </Text>
 
-          <Link href="/match/join" asChild>
-            <Pressable
-              accessibilityHint="Abre a tela para entrar com um código"
-              accessibilityRole="button"
-              style={({ pressed }) => [
-                styles.secondaryButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.secondaryButtonText}>Entrar com código</Text>
-            </Pressable>
-          </Link>
-        </View>
+            <View style={styles.quickFacts}>
+              {quickFacts.map((fact) => (
+                <View key={fact} style={styles.quickFactChip}>
+                  <Text style={styles.quickFactText}>{fact}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.stepsCard}>
+            <Text style={styles.sectionEyebrow}>Como funciona</Text>
+            <Text style={styles.sectionTitle}>Uma dinâmica simples, rápida e gostosa de usar.</Text>
+            <View style={styles.steps}>
+              {howItWorks.map((step) => (
+                <View key={step.text} style={styles.stepRow}>
+                  <View style={styles.stepEmojiBubble}>
+                    <Text style={styles.stepEmoji}>{step.emoji}</Text>
+                  </View>
+                  <Text style={styles.stepText}>{step.text}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          <View style={styles.noticeCard}>
+            <Text style={styles.noticeTitle}>Sala enxuta, experiência caprichada</Text>
+            <Text style={styles.noticeText}>
+              O v1 é focado em 2 pessoas, com filtro por categoria e começo manual pelo
+              criador.
+            </Text>
+          </View>
+
+          <View style={styles.actions}>
+            <Link href="/match/create" asChild>
+              <Pressable
+                accessibilityHint="Abre a criação de uma nova sala"
+                accessibilityRole="button"
+                style={({ pressed }) => [
+                  styles.primaryButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.primaryButtonText}>Criar sala</Text>
+              </Pressable>
+            </Link>
+
+            <Link href="/match/join" asChild>
+              <Pressable
+                accessibilityHint="Abre a tela para entrar com um código"
+                accessibilityRole="button"
+                style={({ pressed }) => [
+                  styles.secondaryButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.secondaryButtonText}>Entrar com código</Text>
+              </Pressable>
+            </Link>
+          </View>
+        </AmbientBackground>
       </SafeAreaView>
     </ScrollView>
   );
@@ -104,27 +128,71 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     width: '100%',
   },
-  heroImage: {
-    borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    height: 280,
-    marginTop: spacing.md,
+  ambient: {
+    borderRadius: radius.xl,
+    paddingBottom: spacing.xl,
+    paddingTop: spacing.md,
     width: '100%',
-    ...shadows.card,
+  },
+  heroCard: {
+    ...shadows.floating,
+    alignItems: 'center',
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorder,
+    borderRadius: radius.xl,
+    borderWidth: 2,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+  },
+  heroBadgeText: {
+    ...typography.label,
+    color: colors.primaryDark,
+    textTransform: 'uppercase',
+  },
+  heroImage: {
+    height: 260,
+    marginTop: spacing.sm,
+    width: '100%',
   },
   title: {
     ...typography.title,
-    color: colors.primary,
-    marginTop: spacing.lg,
+    color: colors.text,
+    marginTop: spacing.md,
     textAlign: 'center',
   },
   subtitle: {
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.sm,
-    maxWidth: 520,
+    maxWidth: 540,
     textAlign: 'center',
+  },
+  quickFacts: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    marginTop: spacing.lg,
+  },
+  quickFactChip: {
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  quickFactText: {
+    ...typography.caption,
+    color: colors.text,
   },
   stepsCard: {
     ...shadows.card,
@@ -132,23 +200,41 @@ const styles = StyleSheet.create({
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
-    gap: spacing.md,
-    marginTop: spacing.lg,
+    marginTop: spacing.xl,
     padding: spacing.lg,
     width: '100%',
   },
+  sectionEyebrow: {
+    ...typography.label,
+    color: colors.primaryDark,
+    textTransform: 'uppercase',
+  },
+  sectionTitle: {
+    ...typography.subheading,
+    color: colors.text,
+    marginTop: spacing.sm,
+  },
+  steps: {
+    gap: spacing.md,
+    marginTop: spacing.lg,
+  },
   stepRow: {
     alignItems: 'center',
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.md,
+    borderWidth: 1,
     flexDirection: 'row',
     gap: spacing.md,
+    padding: spacing.md,
   },
   stepEmojiBubble: {
     alignItems: 'center',
-    backgroundColor: colors.mint,
+    backgroundColor: colors.surfaceRaised,
     borderRadius: radius.md,
-    height: 52,
+    height: 56,
     justifyContent: 'center',
-    width: 52,
+    width: 56,
   },
   stepEmoji: {
     fontSize: 28,
@@ -159,22 +245,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noticeCard: {
+    ...shadows.soft,
     backgroundColor: colors.yellow,
     borderColor: colors.cardBorder,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 2,
     marginTop: spacing.lg,
     padding: spacing.lg,
     width: '100%',
   },
   noticeTitle: {
-    ...typography.heading,
+    ...typography.subheading,
     color: colors.text,
   },
   noticeText: {
     ...typography.body,
     color: colors.textMuted,
-    marginTop: spacing.xs,
+    marginTop: spacing.sm,
   },
   actions: {
     gap: spacing.md,
@@ -182,26 +269,28 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   primaryButton: {
+    ...shadows.soft,
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
     justifyContent: 'center',
-    minHeight: 58,
+    minHeight: 62,
     paddingHorizontal: spacing.xl,
   },
   secondaryButton: {
+    ...shadows.soft,
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.pill,
     borderWidth: 2,
     justifyContent: 'center',
-    minHeight: 58,
+    minHeight: 62,
     paddingHorizontal: spacing.xl,
   },
   buttonPressed: {
-    opacity: 0.84,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.88,
+    transform: [{ scale: 0.985 }],
   },
   primaryButtonText: {
     ...typography.button,

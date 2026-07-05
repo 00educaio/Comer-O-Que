@@ -49,8 +49,8 @@ export function ErrorIllustration() {
 const styles = StyleSheet.create({
   image: {
     aspectRatio: 1,
-    borderRadius: radius.md,
-    maxWidth: 240,
+    borderRadius: radius.lg,
+    maxWidth: 260,
     width: '100%',
   },
 });

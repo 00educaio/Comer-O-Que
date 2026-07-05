@@ -14,6 +14,7 @@ import {
   LoadingIllustration,
 } from '@/components/feedback-illustration';
 import { FoodArtwork } from '@/components/food-artwork';
+import { AmbientBackground } from '@/components/ui/ambient-background';
 import { interviewQuestions } from '@/data/interviewQuestions';
 import { openNearbyPlaces } from '@/lib/maps';
 import { getCatalog } from '@/services/catalogService';
@@ -154,176 +155,209 @@ export default function InterviewScreen() {
       showsVerticalScrollIndicator={false}
       style={styles.screen}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        {isLoading ? (
-          <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <LoadingIllustration />
-            <Text style={styles.feedbackTitle}>Arrumando as perguntas...</Text>
-            <Text style={styles.feedbackText}>É rapidinho, prometemos.</Text>
-          </View>
-        ) : catalogError ? (
-          <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
-            <ErrorIllustration />
-            <Text style={styles.feedbackTitle}>A cozinha se atrapalhou</Text>
-            <Text style={styles.feedbackText}>{catalogError}</Text>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => void loadCatalog()}
-              style={({ pressed }) => [
-                styles.primaryButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.primaryButtonText}>Tentar novamente</Text>
-            </Pressable>
-          </View>
-        ) : recommendations ? (
-          <View style={styles.results}>
-            <View style={styles.header}>
-              <Text style={styles.headerEmoji}>🎯</Text>
-              <Text accessibilityRole="header" style={styles.title}>
-                Temos um palpite!
-              </Text>
-              <Text style={styles.subtitle}>
-                Seu gosto falou alto. Agora é só escolher.
-              </Text>
+        <AmbientBackground style={styles.ambient} tone="interview">
+          {isLoading ? (
+            <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
+              <LoadingIllustration />
+              <Text style={styles.feedbackTitle}>Arrumando as perguntas...</Text>
+              <Text style={styles.feedbackText}>É rapidinho, prometemos.</Text>
             </View>
-
-            {recommendations.length > 0 ? (
-              <>
-                <RecommendationCard
-                  isBest
-                  onOpenMaps={showNearbyPlaces}
-                  recommendation={recommendations[0]}
-                />
-                <Text style={styles.otherTitle}>Outras boas pedidas</Text>
-                {recommendations.slice(1).map((recommendation) => (
-                  <RecommendationCard
-                    key={recommendation.food.id}
-                    onOpenMaps={showNearbyPlaces}
-                    recommendation={recommendation}
-                  />
-                ))}
-              </>
-            ) : (
-              <View style={styles.feedbackCard}>
-                <Text style={styles.feedbackEmoji}>🧐</Text>
-                <Text style={styles.feedbackTitle}>Nenhum prato combinou</Text>
-                <Text style={styles.feedbackText}>
-                  Vamos tentar respostas diferentes?
+          ) : catalogError ? (
+            <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
+              <ErrorIllustration />
+              <Text style={styles.feedbackTitle}>A cozinha se atrapalhou</Text>
+              <Text style={styles.feedbackText}>{catalogError}</Text>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => void loadCatalog()}
+                style={({ pressed }) => [
+                  styles.primaryButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.primaryButtonText}>Tentar novamente</Text>
+              </Pressable>
+            </View>
+          ) : recommendations ? (
+            <View style={styles.results}>
+              <View style={[styles.header, styles.heroCard]}>
+                <View style={styles.heroBadge}>
+                  <Text style={styles.heroBadgeText}>Palpite servido</Text>
+                </View>
+                <Text style={styles.headerEmoji}>🎯</Text>
+                <Text accessibilityRole="header" style={styles.title}>
+                  Temos um palpite!
+                </Text>
+                <Text style={styles.subtitle}>
+                  Seu gosto falou alto. Agora é só escolher.
                 </Text>
               </View>
-            )}
 
-            {mapsError && (
-              <Text accessibilityLiveRegion="polite" style={styles.errorText}>
-                {mapsError}
-              </Text>
-            )}
-
-            <Pressable
-              accessibilityRole="button"
-              onPress={restartInterview}
-              style={({ pressed }) => [
-                styles.restartButton,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.restartButtonText}>Refazer entrevista</Text>
-            </Pressable>
-          </View>
-        ) : currentQuestion ? (
-          <View style={styles.interview}>
-            <View style={styles.header}>
-              {currentQuestionIndex === 0 ? (
-                <Image
-                  accessible={false}
-                  contentFit="cover"
-                  source={require('../../assets/images/ComerOQue/mode-interview-illustration.png')}
-                  style={styles.modeIllustration}
-                />
+              {recommendations.length > 0 ? (
+                <>
+                  <RecommendationCard
+                    isBest
+                    onOpenMaps={showNearbyPlaces}
+                    recommendation={recommendations[0]}
+                  />
+                  <Text style={styles.otherTitle}>Outras boas pedidas</Text>
+                  {recommendations.slice(1).map((recommendation) => (
+                    <RecommendationCard
+                      key={recommendation.food.id}
+                      onOpenMaps={showNearbyPlaces}
+                      recommendation={recommendation}
+                    />
+                  ))}
+                </>
               ) : (
-                <Text style={styles.headerEmoji}>🎤</Text>
+                <View style={styles.feedbackCard}>
+                  <Text style={styles.feedbackEmoji}>🧐</Text>
+                  <Text style={styles.feedbackTitle}>Nenhum prato combinou</Text>
+                  <Text style={styles.feedbackText}>
+                    Vamos tentar respostas diferentes?
+                  </Text>
+                </View>
               )}
-              <Text accessibilityRole="header" style={styles.title}>
-                Conta pra gente
-              </Text>
-              <Text style={styles.subtitle}>
-                Oito perguntinhas e a indecisão sai do cardápio.
-              </Text>
-            </View>
 
-            <View style={styles.progressHeader}>
-              <Text style={styles.progressLabel}>
-                Pergunta {currentQuestionIndex + 1}/{interviewQuestions.length}
-              </Text>
-              <Text style={styles.progressPercent}>
-                {Math.round(
-                  ((currentQuestionIndex + 1) / interviewQuestions.length) * 100,
+              {mapsError && (
+                <Text accessibilityLiveRegion="polite" style={styles.errorText}>
+                  {mapsError}
+                </Text>
+              )}
+
+              <Pressable
+                accessibilityRole="button"
+                onPress={restartInterview}
+                style={({ pressed }) => [
+                  styles.restartButton,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.restartButtonText}>Refazer entrevista</Text>
+              </Pressable>
+            </View>
+          ) : currentQuestion ? (
+            <View style={styles.interview}>
+              <View style={[styles.header, styles.heroCard]}>
+                <View style={styles.heroBadge}>
+                  <Text style={styles.heroBadgeText}>Modo Entrevista</Text>
+                </View>
+                {currentQuestionIndex === 0 ? (
+                  <Image
+                    accessible={false}
+                    contentFit="contain"
+                    source={require('../../assets/images/ComerOQue/mode-interview-illustration.png')}
+                    style={styles.modeIllustration}
+                  />
+                ) : (
+                  <Text style={styles.headerEmoji}>🎤</Text>
                 )}
-                %
-              </Text>
-            </View>
-            <View
-              accessibilityLabel={`Progresso: pergunta ${currentQuestionIndex + 1} de ${interviewQuestions.length}`}
-              accessibilityRole="progressbar"
-              accessibilityValue={{
-                min: 1,
-                max: interviewQuestions.length,
-                now: currentQuestionIndex + 1,
-              }}
-              style={styles.progressTrack}>
-              <View
-                style={[
-                  styles.progressFill,
-                  {
-                    width: `${((currentQuestionIndex + 1) / interviewQuestions.length) * 100}%`,
-                  },
-                ]}
-              />
-            </View>
-
-            <View style={styles.questionCard}>
-              <Text style={styles.question}>{currentQuestion.prompt}</Text>
-              <View style={styles.answerList}>
-                {currentQuestion.options.map((option) => {
-                  const isSelected = answers.some(
-                    (answer) =>
-                      answer.questionId === currentQuestion.id
-                      && answer.optionId === option.id,
-                  );
-
-                  return (
-                    <Pressable
-                      key={option.id}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: isSelected }}
-                      onPress={() => answerQuestion(option.id)}
-                      style={({ pressed }) => [
-                        styles.answerButton,
-                        isSelected && styles.answerButtonSelected,
-                        pressed && styles.buttonPressed,
-                      ]}>
-                      <Text style={styles.answerEmoji}>{option.emoji}</Text>
-                      <Text style={styles.answerText}>{option.label}</Text>
-                      <Text style={styles.answerArrow}>{isSelected ? '✓' : '›'}</Text>
-                    </Pressable>
-                  );
-                })}
+                <Text accessibilityRole="header" style={styles.title}>
+                  Conta pra gente
+                </Text>
+                <Text style={styles.subtitle}>
+                  Oito perguntinhas e a indecisão sai do cardápio.
+                </Text>
+                <View style={styles.heroMetaRow}>
+                  <View style={styles.heroMetaChip}>
+                    <Text style={styles.heroMetaChipText}>
+                      {interviewQuestions.length} perguntas
+                    </Text>
+                  </View>
+                  <View style={styles.heroMetaChip}>
+                    <Text style={styles.heroMetaChipText}>resposta rapidinha</Text>
+                  </View>
+                </View>
               </View>
-            </View>
 
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ disabled: currentQuestionIndex === 0 }}
-              disabled={currentQuestionIndex === 0}
-              onPress={goBack}
-              style={({ pressed }) => [
-                styles.backButton,
-                currentQuestionIndex === 0 && styles.buttonDisabled,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.backButtonText}>← Voltar uma pergunta</Text>
-            </Pressable>
-          </View>
-        ) : null}
+              <View style={styles.progressCard}>
+                <View style={styles.progressHeader}>
+                  <Text style={styles.progressLabel}>
+                    Pergunta {currentQuestionIndex + 1}/{interviewQuestions.length}
+                  </Text>
+                  <Text style={styles.progressPercent}>
+                    {Math.round(
+                      ((currentQuestionIndex + 1) / interviewQuestions.length) * 100,
+                    )}
+                    %
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel={`Progresso: pergunta ${currentQuestionIndex + 1} de ${interviewQuestions.length}`}
+                  accessibilityRole="progressbar"
+                  accessibilityValue={{
+                    min: 1,
+                    max: interviewQuestions.length,
+                    now: currentQuestionIndex + 1,
+                  }}
+                  style={styles.progressTrack}>
+                  <View
+                    style={[
+                      styles.progressFill,
+                      {
+                        width: `${((currentQuestionIndex + 1) / interviewQuestions.length) * 100}%`,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.questionCard}>
+                <Text style={styles.questionEyebrow}>Pergunta da vez</Text>
+                <Text style={styles.question}>{currentQuestion.prompt}</Text>
+                <View style={styles.answerList}>
+                  {currentQuestion.options.map((option) => {
+                    const isSelected = answers.some(
+                      (answer) =>
+                        answer.questionId === currentQuestion.id
+                        && answer.optionId === option.id,
+                    );
+
+                    return (
+                      <Pressable
+                        key={option.id}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: isSelected }}
+                        onPress={() => answerQuestion(option.id)}
+                        style={({ pressed }) => [
+                          styles.answerButton,
+                          isSelected && styles.answerButtonSelected,
+                          pressed && styles.buttonPressed,
+                        ]}>
+                        <Text style={styles.answerEmoji}>{option.emoji}</Text>
+                        <Text style={styles.answerText}>{option.label}</Text>
+                        <View
+                          style={[
+                            styles.answerStateBadge,
+                            isSelected && styles.answerStateBadgeSelected,
+                          ]}>
+                          <Text
+                            style={[
+                              styles.answerStateText,
+                              isSelected && styles.answerStateTextSelected,
+                            ]}>
+                            {isSelected ? 'Escolhida' : 'Toque'}
+                          </Text>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ disabled: currentQuestionIndex === 0 }}
+                disabled={currentQuestionIndex === 0}
+                onPress={goBack}
+                style={({ pressed }) => [
+                  styles.backButton,
+                  currentQuestionIndex === 0 && styles.buttonDisabled,
+                  pressed && styles.buttonPressed,
+                ]}>
+                <Text style={styles.backButtonText}>← Voltar uma pergunta</Text>
+              </Pressable>
+            </View>
+          ) : null}
+        </AmbientBackground>
       </SafeAreaView>
     </ScrollView>
   );
@@ -398,6 +432,11 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     width: '100%',
   },
+  ambient: {
+    borderRadius: radius.xl,
+    minHeight: '100%',
+    paddingBottom: spacing.xl,
+  },
   interview: {
     flex: 1,
   },
@@ -408,20 +447,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
+  heroCard: {
+    ...shadows.floating,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorder,
+    borderRadius: radius.xl,
+    borderWidth: 2,
+    padding: spacing.lg,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+  },
+  heroBadgeText: {
+    ...typography.label,
+    color: colors.primaryDark,
+    textTransform: 'uppercase',
+  },
   headerEmoji: {
     fontSize: 52,
   },
   modeIllustration: {
-    borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
-    borderWidth: 2,
     height: 240,
+    marginTop: spacing.sm,
     width: '100%',
   },
   title: {
     ...typography.title,
     color: colors.text,
-    marginTop: spacing.sm,
+    marginTop: spacing.md,
     textAlign: 'center',
   },
   subtitle: {
@@ -429,6 +486,34 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.sm,
     textAlign: 'center',
+  },
+  heroMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    marginTop: spacing.lg,
+  },
+  heroMetaChip: {
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  heroMetaChipText: {
+    ...typography.caption,
+    color: colors.text,
+  },
+  progressCard: {
+    ...shadows.soft,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    marginBottom: spacing.lg,
+    padding: spacing.md,
   },
   progressHeader: {
     flexDirection: 'row',
@@ -444,10 +529,9 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   progressTrack: {
-    backgroundColor: colors.pink,
+    backgroundColor: colors.primaryGlow,
     borderRadius: radius.pill,
-    height: 12,
-    marginBottom: spacing.lg,
+    height: 14,
     overflow: 'hidden',
   },
   progressFill: {
@@ -456,15 +540,22 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   questionCard: {
-    ...shadows.card,
+    ...shadows.floating,
     backgroundColor: colors.surface,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     padding: spacing.lg,
   },
+  questionEyebrow: {
+    ...typography.label,
+    color: colors.primaryDark,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
   question: {
-    ...typography.heading,
+    ...typography.subheading,
     color: colors.text,
     textAlign: 'center',
   },
@@ -473,40 +564,59 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   answerButton: {
+    ...shadows.soft,
     alignItems: 'center',
-    backgroundColor: colors.yellow,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.md,
-    borderWidth: 2,
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.lg,
+    borderWidth: 1,
     flexDirection: 'row',
-    minHeight: 66,
+    minHeight: 74,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
   answerButtonSelected: {
     backgroundColor: colors.mint,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   answerEmoji: {
     fontSize: 30,
-    width: 46,
+    width: 48,
   },
   answerText: {
     ...typography.button,
     color: colors.text,
     flex: 1,
   },
-  answerArrow: {
-    color: colors.primary,
-    fontSize: 26,
-    fontWeight: '900',
+  answerStateBadge: {
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  answerStateBadgeSelected: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  answerStateText: {
+    ...typography.caption,
+    color: colors.textMuted,
+  },
+  answerStateTextSelected: {
+    color: colors.onPrimary,
   },
   backButton: {
     alignItems: 'center',
     alignSelf: 'center',
-    minHeight: 48,
+    backgroundColor: colors.surfaceWarm,
+    borderRadius: radius.pill,
+    minHeight: 52,
     justifyContent: 'center',
     marginTop: spacing.lg,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
   backButtonText: {
     ...typography.button,
@@ -520,12 +630,12 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   feedbackCard: {
-    ...shadows.card,
+    ...shadows.floating,
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: colors.pink,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     marginVertical: 'auto',
     padding: spacing.xl,
@@ -547,10 +657,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   primaryButton: {
+    ...shadows.soft,
+    alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
     marginTop: spacing.lg,
-    minHeight: 52,
+    minHeight: 56,
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
   },
@@ -560,21 +672,19 @@ const styles = StyleSheet.create({
   },
   resultCard: {
     ...shadows.card,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: 2,
-    padding: spacing.md,
+    padding: spacing.lg,
   },
   bestResultCard: {
     backgroundColor: colors.yellow,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
+    borderRadius: radius.xl,
   },
   bestLabel: {
-    ...typography.caption,
+    ...typography.label,
     color: colors.primaryDark,
-    letterSpacing: 1.2,
     marginBottom: spacing.md,
   },
   resultHeading: {
@@ -620,12 +730,13 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   mapsButton: {
+    ...shadows.soft,
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
     justifyContent: 'center',
-    marginTop: spacing.md,
-    minHeight: 50,
+    marginTop: spacing.lg,
+    minHeight: 52,
     paddingHorizontal: spacing.md,
   },
   mapsButtonText: {
@@ -634,7 +745,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   otherTitle: {
-    ...typography.heading,
+    ...typography.subheading,
     color: colors.text,
     marginTop: spacing.sm,
   },
@@ -645,11 +756,12 @@ const styles = StyleSheet.create({
   },
   restartButton: {
     alignItems: 'center',
+    backgroundColor: colors.surfaceWarm,
     borderColor: colors.primary,
     borderRadius: radius.pill,
     borderWidth: 2,
     justifyContent: 'center',
-    minHeight: 52,
+    minHeight: 54,
     paddingHorizontal: spacing.lg,
   },
   restartButtonText: {

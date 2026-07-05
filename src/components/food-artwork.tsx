@@ -58,7 +58,11 @@ export function FoodArtwork({
 const styles = StyleSheet.create({
   fallbackContainer: {
     alignItems: 'center',
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderWidth: 1,
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   fallbackText: {
     color: colors.text,
@@ -66,6 +70,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignItems: 'center',
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderWidth: 1,
     justifyContent: 'center',
     overflow: 'hidden',
   },

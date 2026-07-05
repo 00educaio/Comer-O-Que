@@ -14,6 +14,7 @@ import {
   LoadingIllustration,
 } from '@/components/feedback-illustration';
 import { FoodArtwork } from '@/components/food-artwork';
+import { AmbientBackground } from '@/components/ui/ambient-background';
 import { shareMatchInvite } from '@/lib/matchInvite';
 import { openNearbyPlaces } from '@/lib/maps';
 import {
@@ -85,6 +86,11 @@ function upsertLocalVote(
   );
 
   return [...remainingVotes, nextVote];
+}
+
+function getParticipantInitial(nickname: string) {
+  const value = nickname.trim().charAt(0);
+  return value ? value.toUpperCase() : '?';
 }
 
 export default function MatchRoomScreen() {
@@ -254,6 +260,9 @@ export default function MatchRoomScreen() {
   const latestMatch = matches[0] ?? null;
   const latestMatchFood = latestMatch?.food ?? matchedItem?.food ?? null;
   const latestMatchAt = latestMatch?.matchedAt ?? room?.matchedAt ?? null;
+  const voteProgress = items.length > 0
+    ? Math.round((votedFoodIds.size / items.length) * 100)
+    : 0;
 
   async function handleShareInvite() {
     if (isSharing) {
@@ -390,7 +399,8 @@ export default function MatchRoomScreen() {
       showsVerticalScrollIndicator={false}
       style={styles.screen}>
       <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        {isLoading ? (
+        <AmbientBackground style={styles.ambient} tone="match">
+          {isLoading ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
             <LoadingIllustration />
             <Text style={styles.feedbackTitle}>Preparando a sala...</Text>
@@ -447,16 +457,25 @@ export default function MatchRoomScreen() {
               </Link>
             </View>
           </View>
-        ) : room?.status === 'waiting' ? (
+          ) : room?.status === 'waiting' ? (
           <View style={styles.section}>
             <View style={styles.roomHeaderCard}>
               <Text style={styles.roomEyebrow}>Sala pronta para convite</Text>
               <Text accessibilityRole="header" style={styles.roomCode}>
                 {room.code}
               </Text>
-              <Text style={styles.roomMeta}>
-                Filtro: {filterLabelBySlug[room.filterSlug]}
-              </Text>
+              <View style={styles.roomMetaRow}>
+                <View style={styles.roomMetaChip}>
+                  <Text style={styles.roomMetaChipText}>
+                    Filtro: {filterLabelBySlug[room.filterSlug]}
+                  </Text>
+                </View>
+                <View style={styles.roomMetaChip}>
+                  <Text style={styles.roomMetaChipText}>
+                    {participants.length}/{room.maxParticipants} pessoas
+                  </Text>
+                </View>
+              </View>
               <Pressable
                 accessibilityRole="button"
                 disabled={isSharing}
@@ -481,7 +500,14 @@ export default function MatchRoomScreen() {
               <Text style={styles.cardTitle}>Participantes conectados</Text>
               {participants.map((participant) => (
                 <View key={participant.id} style={styles.participantRow}>
-                  <Text style={styles.participantName}>{participant.nickname}</Text>
+                  <View style={styles.participantIdentity}>
+                    <View style={styles.participantAvatar}>
+                      <Text style={styles.participantAvatarText}>
+                        {getParticipantInitial(participant.nickname)}
+                      </Text>
+                    </View>
+                    <Text style={styles.participantName}>{participant.nickname}</Text>
+                  </View>
                   <Text style={styles.participantBadge}>
                     {participant.isCreator ? 'Criou a sala' : 'Convidado'}
                   </Text>
@@ -527,7 +553,7 @@ export default function MatchRoomScreen() {
               </Text>
             )}
           </View>
-        ) : room?.status === 'active' || room?.status === 'matched' ? (
+          ) : room?.status === 'active' || room?.status === 'matched' ? (
           <View style={styles.section}>
             <View style={styles.gameHeaderCard}>
               <Text style={styles.roomEyebrow}>Sala {room.code}</Text>
@@ -537,6 +563,13 @@ export default function MatchRoomScreen() {
               <Text style={styles.feedbackText}>
                 {votedFoodIds.size}/{items.length} opções já passaram pela sua mão.
               </Text>
+              <View
+                accessibilityLabel={`Progresso da rodada: ${voteProgress}%`}
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: voteProgress }}
+                style={styles.progressTrack}>
+                <View style={[styles.progressFill, { width: `${voteProgress}%` }]} />
+              </View>
               <Text style={styles.historySummaryText}>
                 {matches.length > 0
                   ? `${matches.length} match${matches.length > 1 ? 'es' : ''} já saiu${
@@ -588,6 +621,8 @@ export default function MatchRoomScreen() {
 
             {currentItem ? (
               <View style={styles.foodCard}>
+                <Text style={styles.foodEyebrow}>Card da vez</Text>
+                <View style={styles.foodSpotlight} />
                 <FoodArtwork
                   containerStyle={styles.foodArtwork}
                   fallbackTextStyle={styles.foodArtworkFallback}
@@ -667,7 +702,7 @@ export default function MatchRoomScreen() {
                         styles.historyAction,
                         pressed && styles.buttonPressed,
                       ]}>
-                      <Text style={styles.historyActionText}>Maps</Text>
+                      <Text style={styles.historyActionText}>Ver mapa</Text>
                     </Pressable>
                   </View>
                 ))
@@ -690,7 +725,7 @@ export default function MatchRoomScreen() {
               </Text>
             )}
           </View>
-        ) : (
+          ) : (
           <View style={styles.feedbackCard}>
             <ErrorIllustration />
             <Text style={styles.feedbackTitle}>Essa sala ainda não abriu direito</Text>
@@ -719,13 +754,14 @@ export default function MatchRoomScreen() {
               </Link>
             </View>
           </View>
-        )}
+          )}
 
-        {realtimeErrorMessage && !isLoading && (
-          <Text accessibilityLiveRegion="polite" style={styles.realtimeNotice}>
-            {realtimeErrorMessage}
-          </Text>
-        )}
+          {realtimeErrorMessage && !isLoading && (
+            <Text accessibilityLiveRegion="polite" style={styles.realtimeNotice}>
+              {realtimeErrorMessage}
+            </Text>
+          )}
+        </AmbientBackground>
       </SafeAreaView>
     </ScrollView>
   );
@@ -748,15 +784,20 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     width: '100%',
   },
+  ambient: {
+    borderRadius: radius.xl,
+    minHeight: '100%',
+    paddingBottom: spacing.xl,
+  },
   section: {
     gap: spacing.lg,
   },
   feedbackCard: {
-    ...shadows.card,
+    ...shadows.floating,
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     gap: spacing.md,
     padding: spacing.lg,
@@ -775,35 +816,46 @@ const styles = StyleSheet.create({
     fontSize: 44,
   },
   roomHeaderCard: {
-    ...shadows.card,
-    backgroundColor: colors.mint,
+    ...shadows.floating,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     padding: spacing.lg,
   },
   roomEyebrow: {
-    ...typography.caption,
-    color: colors.textMuted,
-    letterSpacing: 1.3,
+    ...typography.label,
+    color: colors.primaryDark,
     textTransform: 'uppercase',
   },
   roomCode: {
-    ...typography.title,
+    ...typography.code,
     color: colors.primary,
-    letterSpacing: 3,
     marginTop: spacing.sm,
     textAlign: 'center',
   },
-  roomMeta: {
-    ...typography.body,
-    color: colors.text,
+  roomMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    justifyContent: 'center',
     marginTop: spacing.sm,
-    textAlign: 'center',
+  },
+  roomMetaChip: {
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  roomMetaChipText: {
+    ...typography.caption,
+    color: colors.text,
   },
   participantsCard: {
     ...shadows.card,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
@@ -816,7 +868,7 @@ const styles = StyleSheet.create({
   },
   participantRow: {
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceWarm,
     borderRadius: radius.md,
     flexDirection: 'row',
     gap: spacing.md,
@@ -824,10 +876,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
+  participantIdentity: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  participantAvatar: {
+    alignItems: 'center',
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.pill,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  participantAvatarText: {
+    ...typography.button,
+    color: colors.primaryDark,
+  },
   participantName: {
     ...typography.button,
     color: colors.text,
-    flex: 1,
   },
   participantBadge: {
     ...typography.caption,
@@ -854,6 +923,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   primaryButton: {
+    ...shadows.soft,
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
@@ -862,8 +932,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
   },
   secondaryButton: {
+    ...shadows.soft,
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceWarm,
     borderColor: colors.cardBorder,
     borderRadius: radius.pill,
     borderWidth: 2,
@@ -896,23 +967,34 @@ const styles = StyleSheet.create({
   },
   gameHeaderCard: {
     ...shadows.card,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
     gap: spacing.sm,
     padding: spacing.lg,
   },
+  progressTrack: {
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.pill,
+    height: 14,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    height: '100%',
+  },
   historySummaryText: {
     ...typography.body,
     color: colors.textMuted,
   },
   latestMatchCard: {
-    ...shadows.card,
+    ...shadows.floating,
     alignItems: 'center',
     backgroundColor: colors.mint,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     gap: spacing.sm,
     padding: spacing.lg,
@@ -947,19 +1029,36 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   foodCard: {
-    ...shadows.card,
+    ...shadows.floating,
     alignItems: 'center',
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
+    borderRadius: radius.xl,
     borderWidth: 2,
     padding: spacing.lg,
   },
+  foodEyebrow: {
+    ...typography.label,
+    color: colors.primaryDark,
+    textTransform: 'uppercase',
+  },
+  foodSpotlight: {
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.pill,
+    height: 180,
+    opacity: 0.9,
+    position: 'absolute',
+    top: 58,
+    width: 180,
+  },
   foodArtwork: {
+    ...shadows.card,
     borderRadius: radius.lg,
     height: 220,
+    marginTop: spacing.md,
     overflow: 'hidden',
     width: '100%',
+    zIndex: 1,
   },
   foodArtworkImage: {
     height: '100%',
@@ -991,7 +1090,7 @@ const styles = StyleSheet.create({
   },
   historyCard: {
     ...shadows.card,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
@@ -1000,7 +1099,7 @@ const styles = StyleSheet.create({
   },
   historyRow: {
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surfaceWarm,
     borderRadius: radius.md,
     flexDirection: 'row',
     gap: spacing.md,
@@ -1056,14 +1155,15 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   historyAction: {
+    ...shadows.soft,
     alignItems: 'center',
     alignSelf: 'stretch',
-    backgroundColor: colors.surface,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorderSoft,
     borderRadius: radius.pill,
-    borderWidth: 2,
+    borderWidth: 1,
     justifyContent: 'center',
-    minWidth: 72,
+    minWidth: 92,
     paddingHorizontal: spacing.md,
   },
   historyActionText: {
