@@ -2,12 +2,10 @@ import { Image } from 'expo-image';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   ErrorIllustration,
@@ -15,7 +13,7 @@ import {
 } from '@/components/feedback-illustration';
 import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
-import { AmbientBackground } from '@/components/ui/ambient-background';
+import { ScreenShell } from '@/components/ui/app-shell';
 import { openNearbyPlaces } from '@/lib/maps';
 import { drawWeightedFood } from '@/lib/roulette';
 import { getCatalog } from '@/services/catalogService';
@@ -185,12 +183,7 @@ export default function RouletteScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.screen}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="roulette">
+    <ScreenShell contentContainerStyle={styles.scrollContent} tone="roulette">
           <View style={styles.header}>
             <View style={styles.heroBadge}>
               <Text style={styles.heroBadgeText}>Roleta com suspense</Text>
@@ -419,15 +412,13 @@ export default function RouletteScreen() {
               )}
             </>
           )}
-        </AmbientBackground>
-        <CelebrationOverlay
-          message="A roleta escolheu uma boa pedida para agora."
-          title="Saiu o resultado!"
-          tone="roulette"
-          triggerKey={celebrationKey}
-        />
-      </SafeAreaView>
-    </ScrollView>
+      <CelebrationOverlay
+        message="A roleta escolheu uma boa pedida para agora."
+        title="Saiu o resultado!"
+        tone="roulette"
+        triggerKey={celebrationKey}
+      />
+    </ScreenShell>
   );
 }
 

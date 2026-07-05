@@ -2,12 +2,10 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   ErrorIllustration,
@@ -15,7 +13,7 @@ import {
 } from '@/components/feedback-illustration';
 import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
-import { AmbientBackground } from '@/components/ui/ambient-background';
+import { ScreenShell } from '@/components/ui/app-shell';
 import { shareMatchInvite } from '@/lib/matchInvite';
 import { openNearbyPlaces } from '@/lib/maps';
 import {
@@ -399,12 +397,7 @@ export default function MatchRoomScreen() {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-      style={styles.screen}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="match">
+    <ScreenShell contentContainerStyle={styles.scrollContent} tone="match">
           {isLoading ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
             <LoadingIllustration />
@@ -766,16 +759,14 @@ export default function MatchRoomScreen() {
               {realtimeErrorMessage}
             </Text>
           )}
-        </AmbientBackground>
-        <CelebrationOverlay
-          message="Os dois curtiram a mesma comida. Hora de comemorar essa vitória."
-          skipInitialTrigger
-          title="Deu match!"
-          tone="match"
-          triggerKey={celebrationKey}
-        />
-      </SafeAreaView>
-    </ScrollView>
+      <CelebrationOverlay
+        message="Os dois curtiram a mesma comida. Hora de comemorar essa vitória."
+        skipInitialTrigger
+        title="Deu match!"
+        tone="match"
+        triggerKey={celebrationKey}
+      />
+    </ScreenShell>
   );
 }
 

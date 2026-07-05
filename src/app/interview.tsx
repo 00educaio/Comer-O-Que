@@ -2,12 +2,10 @@ import { Image } from 'expo-image';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   ErrorIllustration,
@@ -15,7 +13,7 @@ import {
 } from '@/components/feedback-illustration';
 import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
-import { AmbientBackground } from '@/components/ui/ambient-background';
+import { ScreenShell } from '@/components/ui/app-shell';
 import { interviewQuestions } from '@/data/interviewQuestions';
 import { openNearbyPlaces } from '@/lib/maps';
 import { getCatalog } from '@/services/catalogService';
@@ -152,12 +150,7 @@ export default function InterviewScreen() {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-      style={styles.screen}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="interview">
+    <ScreenShell contentContainerStyle={styles.scrollContent} tone="interview">
           {isLoading ? (
             <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
               <LoadingIllustration />
@@ -359,15 +352,13 @@ export default function InterviewScreen() {
               </Pressable>
             </View>
           ) : null}
-        </AmbientBackground>
-        <CelebrationOverlay
-          message="Seu melhor palpite saiu do forno e chegou prontinho."
-          title="Palpite servido!"
-          tone="interview"
-          triggerKey={celebrationKey}
-        />
-      </SafeAreaView>
-    </ScrollView>
+      <CelebrationOverlay
+        message="Seu melhor palpite saiu do forno e chegou prontinho."
+        title="Palpite servido!"
+        tone="interview"
+        triggerKey={celebrationKey}
+      />
+    </ScreenShell>
   );
 }
 

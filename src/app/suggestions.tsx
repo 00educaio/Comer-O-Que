@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { AmbientBackground } from '@/components/ui/ambient-background';
+import { ScreenShell } from '@/components/ui/app-shell';
+import {
+  AppButton,
+  AppPill,
+  FormField,
+  Reveal,
+  SurfaceCard,
+} from '@/components/ui/app-primitives';
 import { submitAppFeedback } from '@/services/feedbackService';
-import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
+import { colors, spacing, typography } from '@/theme/theme';
 
 const suggestionPills = ['Sugestão', 'Problema', 'Elogio'] as const;
 
@@ -47,223 +46,157 @@ export default function SuggestionsScreen() {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
+    <ScreenShell
+      contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-      style={styles.screen}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="home">
-          <View style={styles.heroCard}>
-            <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>Caixinha aberta</Text>
-            </View>
-            <Text style={styles.heroEmoji}>💌</Text>
-            <Text accessibilityRole="header" style={styles.title}>
-              Conte o que você quer ver no app.
-            </Text>
-            <Text style={styles.subtitle}>
-              Vale sugestão, elogio ou relato de problema. A gente salva seu nome e a
-              mensagem para ler depois no Supabase.
-            </Text>
-            <View style={styles.pillRow}>
-              {suggestionPills.map((pill) => (
-                <View key={pill} style={styles.pill}>
-                  <Text style={styles.pillText}>{pill}</Text>
-                </View>
-              ))}
-            </View>
+      tone="home">
+      <Reveal>
+        <SurfaceCard
+          contentStyle={styles.heroCardContent}
+          gradientColors={['#FF9F79', '#E12B2D', '#8B1820']}>
+          <AppPill label="Caixinha aberta" tone="cream" />
+          <Text style={styles.heroEmoji}>💌</Text>
+          <Text accessibilityRole="header" style={styles.heroTitle}>
+            Conte o que você quer ver no app.
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            Vale sugestão, elogio ou relato de problema. A mensagem fica salva com seu
+            nome para a gente continuar refinando a experiência.
+          </Text>
+          <View style={styles.pillRow}>
+            {suggestionPills.map((pill) => (
+              <AppPill
+                key={pill}
+                label={pill}
+                style={styles.heroTag}
+                textStyle={styles.heroTagText}
+                tone="dark"
+              />
+            ))}
           </View>
+        </SurfaceCard>
+      </Reveal>
 
-          <View style={styles.formCard}>
-            <View style={styles.fieldBlock}>
-              <Text style={styles.fieldLabel}>Seu nome</Text>
-              <Text style={styles.fieldHint}>
-                É com ele que sua mensagem vai ficar registrada.
-              </Text>
-              <TextInput
-                autoCapitalize="words"
-                autoCorrect={false}
-                maxLength={80}
-                onChangeText={(value) => {
-                  setName(value);
-                  if (errorMessage) {
-                    setErrorMessage(null);
-                  }
-                }}
-                placeholder="Ex.: Caio"
-                placeholderTextColor={colors.textSoft}
-                returnKeyType="next"
-                style={styles.input}
-                value={name}
-              />
-            </View>
+      <Reveal delay={90}>
+        <SurfaceCard contentStyle={styles.formCardContent}>
+          <FormField
+            autoCapitalize="words"
+            autoCorrect={false}
+            hint="É com ele que sua mensagem vai ficar registrada."
+            label="Seu nome"
+            maxLength={80}
+            onChangeText={(value) => {
+              setName(value);
+              if (errorMessage) {
+                setErrorMessage(null);
+              }
+            }}
+            placeholder="Ex.: Caio"
+            returnKeyType="next"
+            value={name}
+          />
 
-            <View style={[styles.fieldBlock, styles.messageFieldBlock]}>
-              <View style={styles.fieldLabelRow}>
-                <Text style={styles.fieldLabel}>Sua mensagem</Text>
-                <Text style={styles.counterText}>{message.length}/1200</Text>
-              </View>
-              <Text style={styles.fieldHint}>
-                Pode mandar uma sugestão, contar um bug ou deixar um elogio.
-              </Text>
-              <TextInput
-                autoCapitalize="sentences"
-                autoCorrect
-                maxLength={1200}
-                multiline
-                onChangeText={(value) => {
-                  setMessage(value);
-                  if (errorMessage) {
-                    setErrorMessage(null);
-                  }
-                  if (successMessage) {
-                    setSuccessMessage(null);
-                  }
-                }}
-                placeholder="Ex.: Seria legal salvar meu último resultado, ou então a tela X está travando..."
-                placeholderTextColor={colors.textSoft}
-                style={[styles.input, styles.messageInput]}
-                textAlignVertical="top"
-                value={message}
-              />
-            </View>
+          <FormField
+            autoCapitalize="sentences"
+            autoCorrect
+            fieldStyle={styles.messageField}
+            hint="Pode mandar uma sugestão, contar um bug ou deixar um elogio."
+            label="Sua mensagem"
+            maxLength={1200}
+            multiline
+            onChangeText={(value) => {
+              setMessage(value);
+              if (errorMessage) {
+                setErrorMessage(null);
+              }
+              if (successMessage) {
+                setSuccessMessage(null);
+              }
+            }}
+            placeholder="Ex.: Seria legal salvar meu último resultado, ou então a tela X está travando..."
+            rightLabel={`${message.length}/1200`}
+            value={message}
+          />
 
-            <View style={styles.noteCard}>
-              <Text style={styles.noteTitle}>O que fica salvo</Text>
-              <Text style={styles.noteText}>Apenas seu nome e a mensagem enviada.</Text>
-            </View>
+          <SurfaceCard style={styles.noteCard} tone="soft">
+            <Text style={styles.noteTitle}>O que fica salvo</Text>
+            <Text style={styles.noteText}>Apenas seu nome e a mensagem enviada.</Text>
+          </SurfaceCard>
 
-            {errorMessage && (
-              <Text accessibilityLiveRegion="polite" style={styles.errorText}>
-                {errorMessage}
-              </Text>
-            )}
+          {errorMessage ? (
+            <Text accessibilityLiveRegion="polite" style={styles.errorText}>
+              {errorMessage}
+            </Text>
+          ) : null}
 
-            {successMessage && (
-              <View accessibilityLiveRegion="polite" style={styles.successCard}>
+          {successMessage ? (
+            <View accessibilityLiveRegion="polite">
+              <SurfaceCard style={styles.successCard} tone="mint">
                 <Text style={styles.successTitle}>Mensagem recebida</Text>
                 <Text style={styles.successText}>{successMessage}</Text>
-              </View>
-            )}
+              </SurfaceCard>
+            </View>
+          ) : null}
 
-            <Pressable
-              accessibilityRole="button"
-              disabled={isSubmitting}
-              onPress={() => void handleSubmit()}
-              style={({ pressed }) => [
-                styles.primaryButton,
-                isSubmitting && styles.buttonDisabled,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.primaryButtonText}>
-                {isSubmitting ? 'Enviando mensagem...' : 'Enviar mensagem'}
-              </Text>
-            </Pressable>
-          </View>
-        </AmbientBackground>
-      </SafeAreaView>
-    </ScrollView>
+          <AppButton
+            disabled={isSubmitting}
+            onPress={() => void handleSubmit()}
+            style={styles.submitButton}
+            title={isSubmitting ? 'Enviando mensagem...' : 'Enviar mensagem'}
+          />
+        </SurfaceCard>
+      </Reveal>
+    </ScreenShell>
   );
 }
 
 const styles = StyleSheet.create({
-  ambient: {
-    borderRadius: radius.xl,
-    paddingBottom: spacing.xl,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.985 }],
-  },
-  counterText: {
-    ...typography.caption,
-    color: colors.textSoft,
+  content: {
+    gap: spacing.xl,
   },
   errorText: {
     ...typography.body,
     color: colors.primaryDark,
-    marginTop: spacing.lg,
+    marginTop: spacing.md,
     textAlign: 'center',
   },
-  fieldBlock: {
-    gap: spacing.sm,
+  formCardContent: {
+    gap: spacing.lg,
   },
-  fieldHint: {
-    ...typography.body,
-    color: colors.textMuted,
-  },
-  fieldLabel: {
-    ...typography.subheading,
-    color: colors.text,
-  },
-  fieldLabelRow: {
+  heroCardContent: {
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  formCard: {
-    ...shadows.floating,
-    backgroundColor: colors.surface,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    marginTop: spacing.xl,
-    padding: spacing.lg,
-  },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.primaryGlow,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  heroBadgeText: {
-    ...typography.label,
-    color: colors.primaryDark,
-    textTransform: 'uppercase',
-  },
-  heroCard: {
-    ...shadows.card,
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    padding: spacing.lg,
+    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
   },
   heroEmoji: {
-    fontSize: 48,
+    fontSize: 52,
     marginTop: spacing.md,
   },
-  input: {
-    ...typography.bodyStrong,
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    color: colors.text,
-    minHeight: 60,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+  heroSubtitle: {
+    ...typography.body,
+    color: colors.textInverted,
+    marginTop: spacing.sm,
+    textAlign: 'center',
   },
-  messageFieldBlock: {
-    marginTop: spacing.xl,
+  heroTag: {
+    backgroundColor: 'rgba(49, 18, 23, 0.16)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  messageInput: {
-    minHeight: 180,
-    paddingTop: spacing.md,
+  heroTagText: {
+    color: colors.textInverted,
+  },
+  heroTitle: {
+    ...typography.title,
+    color: colors.textInverted,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  messageField: {
+    marginTop: spacing.xs,
   },
   noteCard: {
-    ...shadows.soft,
-    backgroundColor: colors.primaryGlow,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    marginTop: spacing.xl,
-    padding: spacing.md,
+    backgroundColor: colors.surfaceTinted,
   },
   noteText: {
     ...typography.body,
@@ -274,81 +207,26 @@ const styles = StyleSheet.create({
     ...typography.button,
     color: colors.text,
   },
-  pill: {
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
   pillRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
+    justifyContent: 'center',
     marginTop: spacing.lg,
   },
-  pillText: {
-    ...typography.caption,
-    color: colors.primaryDark,
-    textTransform: 'uppercase',
-  },
-  primaryButton: {
-    ...shadows.soft,
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    justifyContent: 'center',
-    marginTop: spacing.xl,
-    minHeight: 62,
-    paddingHorizontal: spacing.xl,
-  },
-  primaryButtonText: {
-    ...typography.button,
-    color: colors.onPrimary,
-  },
-  safeArea: {
-    alignSelf: 'center',
-    flex: 1,
-    maxWidth: 720,
-    paddingBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    width: '100%',
-  },
-  screen: {
-    backgroundColor: colors.background,
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  subtitle: {
-    ...typography.body,
-    color: colors.textMuted,
+  submitButton: {
     marginTop: spacing.sm,
   },
   successCard: {
-    ...shadows.soft,
     backgroundColor: colors.mint,
-    borderColor: colors.success,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    marginTop: spacing.xl,
-    padding: spacing.md,
   },
   successText: {
     ...typography.body,
-    color: colors.text,
+    color: colors.textMuted,
     marginTop: spacing.xs,
   },
   successTitle: {
     ...typography.button,
     color: colors.text,
-  },
-  title: {
-    ...typography.title,
-    color: colors.text,
-    marginTop: spacing.sm,
   },
 });

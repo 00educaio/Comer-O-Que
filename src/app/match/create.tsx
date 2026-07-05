@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { AmbientBackground } from '@/components/ui/ambient-background';
+import { ScreenShell } from '@/components/ui/app-shell';
+import {
+  AppButton,
+  AppPill,
+  FormField,
+  Reveal,
+  SurfaceCard,
+} from '@/components/ui/app-primitives';
 import { createMatchRoom } from '@/services/matchService';
-import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
+import { colors, spacing, typography } from '@/theme/theme';
 import type { MatchFilterSlug } from '@/types/match';
 
 const filterOptions: {
@@ -86,273 +85,172 @@ export default function MatchCreateScreen() {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
+    <ScreenShell
+      contentContainerStyle={styles.content}
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-      style={styles.screen}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="match">
-          <View style={styles.heroCard}>
-            <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>Criando a rodada</Text>
-            </View>
-            <Text accessibilityRole="header" style={styles.title}>
-              Monte uma sala bonita e pronta para compartilhar.
+      tone="match">
+      <Reveal>
+        <SurfaceCard
+          contentStyle={styles.heroCardContent}
+          gradientColors={['#FFA57D', '#E12B2D', '#89131D']}>
+          <AppPill label="Criando a rodada" tone="cream" />
+          <Text accessibilityRole="header" style={styles.heroTitle}>
+            Monte uma sala bonita e pronta para compartilhar.
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            Escolha um apelido, defina o filtro e o app prepara o lobby com código
+            curto e link.
+          </Text>
+        </SurfaceCard>
+      </Reveal>
+
+      <Reveal delay={90}>
+        <SurfaceCard contentStyle={styles.formCardContent}>
+          <FormField
+            autoCapitalize="words"
+            autoCorrect={false}
+            hint="É assim que a outra pessoa vai te ver na sala."
+            label="Seu apelido"
+            maxLength={32}
+            onChangeText={setNickname}
+            placeholder="Ex.: Caio faminto"
+            returnKeyType="done"
+            value={nickname}
+          />
+
+          <View style={styles.filtersBlock}>
+            <Text style={styles.fieldLabel}>Filtro da sala</Text>
+            <Text style={styles.fieldHint}>
+              Escolha o clima da rodada antes de convidar.
             </Text>
-            <Text style={styles.subtitle}>
-              Escolha um apelido, defina o filtro e o app prepara o lobby com código
-              curto e link.
-            </Text>
-          </View>
 
-          <View style={styles.formCard}>
-            <View style={styles.fieldBlock}>
-              <Text style={styles.fieldLabel}>Seu apelido</Text>
-              <Text style={styles.fieldHint}>É assim que a outra pessoa vai te ver na sala.</Text>
-              <TextInput
-                autoCapitalize="words"
-                autoCorrect={false}
-                maxLength={32}
-                onChangeText={setNickname}
-                placeholder="Ex.: Caio faminto"
-                placeholderTextColor={colors.textSoft}
-                returnKeyType="done"
-                style={styles.input}
-                value={nickname}
-              />
-            </View>
+            <View style={styles.filters}>
+              {filterOptions.map((option) => {
+                const isSelected = option.value === filterSlug;
 
-            <View style={styles.fieldBlock}>
-              <Text style={styles.fieldLabel}>Filtro da sala</Text>
-              <Text style={styles.fieldHint}>Escolha o clima da rodada antes de convidar.</Text>
-              <View style={styles.filters}>
-                {filterOptions.map((option) => {
-                  const isSelected = option.value === filterSlug;
-
-                  return (
-                    <Pressable
-                      key={option.value}
-                      accessibilityRole="radio"
-                      accessibilityState={{ checked: isSelected }}
-                      onPress={() => setFilterSlug(option.value)}
-                      style={({ pressed }) => [
+                return (
+                  <Pressable
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: isSelected }}
+                    key={option.value}
+                    onPress={() => setFilterSlug(option.value)}
+                    style={({ pressed }) => [pressed && styles.optionPressed]}>
+                    <SurfaceCard
+                      contentStyle={styles.filterCardContent}
+                      style={[
                         styles.filterCard,
                         isSelected && styles.filterCardSelected,
-                        pressed && styles.cardPressed,
-                      ]}>
+                      ]}
+                      tone={isSelected ? 'mint' : 'warm'}>
                       <View style={styles.filterHeader}>
                         <Text style={styles.filterEmoji}>{option.emoji}</Text>
-                        <View style={[styles.filterBadge, isSelected && styles.filterBadgeSelected]}>
-                          <Text
-                            style={[
-                              styles.filterBadgeText,
-                              isSelected && styles.filterBadgeTextSelected,
-                            ]}>
-                            {isSelected ? 'Selecionado' : 'Toque para usar'}
-                          </Text>
-                        </View>
+                        <AppPill
+                          label={isSelected ? 'Selecionado' : 'Toque para usar'}
+                          tone={isSelected ? 'red' : 'cream'}
+                        />
                       </View>
                       <Text style={styles.filterTitle}>{option.label}</Text>
                       <Text style={styles.filterDescription}>{option.description}</Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
+                    </SurfaceCard>
+                  </Pressable>
+                );
+              })}
             </View>
-
-            {errorMessage && (
-              <Text accessibilityLiveRegion="polite" style={styles.errorText}>
-                {errorMessage}
-              </Text>
-            )}
-
-            <Pressable
-              accessibilityRole="button"
-              disabled={isSubmitting}
-              onPress={() => void handleCreateRoom()}
-              style={({ pressed }) => [
-                styles.primaryButton,
-                isSubmitting && styles.buttonDisabled,
-                pressed && styles.buttonPressed,
-              ]}>
-              <Text style={styles.primaryButtonText}>
-                {isSubmitting ? 'Criando sala...' : 'Criar sala'}
-              </Text>
-            </Pressable>
           </View>
-        </AmbientBackground>
-      </SafeAreaView>
-    </ScrollView>
+
+          {errorMessage ? (
+            <Text accessibilityLiveRegion="polite" style={styles.errorText}>
+              {errorMessage}
+            </Text>
+          ) : null}
+
+          <AppButton
+            disabled={isSubmitting}
+            onPress={() => void handleCreateRoom()}
+            style={styles.submitButton}
+            title={isSubmitting ? 'Criando sala...' : 'Criar sala'}
+          />
+        </SurfaceCard>
+      </Reveal>
+    </ScreenShell>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: colors.background,
-    flex: 1,
+  content: {
+    gap: spacing.xl,
   },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  safeArea: {
-    alignSelf: 'center',
-    flex: 1,
-    maxWidth: 720,
-    paddingBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    width: '100%',
-  },
-  ambient: {
-    borderRadius: radius.xl,
-    paddingBottom: spacing.xl,
-  },
-  heroCard: {
-    ...shadows.card,
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    padding: spacing.lg,
-  },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.primaryGlow,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  heroBadgeText: {
-    ...typography.label,
+  errorText: {
+    ...typography.body,
     color: colors.primaryDark,
-    textTransform: 'uppercase',
+    textAlign: 'center',
   },
-  title: {
-    ...typography.title,
-    color: colors.text,
-    marginTop: spacing.md,
-  },
-  subtitle: {
+  fieldHint: {
     ...typography.body,
     color: colors.textMuted,
-    marginTop: spacing.sm,
-  },
-  formCard: {
-    ...shadows.floating,
-    backgroundColor: colors.surface,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.xl,
-    borderWidth: 2,
-    marginTop: spacing.xl,
-    padding: spacing.lg,
-  },
-  fieldBlock: {
-    gap: spacing.sm,
+    marginTop: spacing.xs,
   },
   fieldLabel: {
     ...typography.subheading,
     color: colors.text,
   },
-  fieldHint: {
-    ...typography.body,
-    color: colors.textMuted,
-  },
-  input: {
-    ...typography.bodyStrong,
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    color: colors.text,
-    minHeight: 60,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  filters: {
-    gap: spacing.md,
-    marginTop: spacing.sm,
-  },
   filterCard: {
-    ...shadows.soft,
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    minHeight: 124,
-    padding: spacing.md,
+    minHeight: 132,
+  },
+  filterCardContent: {
+    minHeight: 132,
   },
   filterCardSelected: {
-    backgroundColor: colors.mint,
-    borderColor: colors.primary,
-    borderWidth: 2,
-  },
-  filterHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  filterEmoji: {
-    fontSize: 30,
-  },
-  filterBadge: {
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  filterBadgeSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  filterBadgeText: {
-    ...typography.caption,
-    color: colors.textMuted,
-  },
-  filterBadgeTextSelected: {
-    color: colors.onPrimary,
-  },
-  filterTitle: {
-    ...typography.heading,
-    color: colors.text,
-    marginTop: spacing.sm,
+    borderColor: colors.primaryStrong,
   },
   filterDescription: {
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.xs,
   },
-  errorText: {
-    ...typography.body,
-    color: colors.primaryDark,
-    marginTop: spacing.xl,
-    textAlign: 'center',
+  filterEmoji: {
+    fontSize: 30,
   },
-  primaryButton: {
-    ...shadows.soft,
+  filterHeader: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    justifyContent: 'center',
-    marginTop: spacing.xl,
-    minHeight: 62,
-    paddingHorizontal: spacing.xl,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  primaryButtonText: {
-    ...typography.button,
-    color: colors.onPrimary,
+  filterTitle: {
+    ...typography.heading,
+    color: colors.text,
+    marginTop: spacing.sm,
   },
-  buttonDisabled: {
-    opacity: 0.7,
+  filters: {
+    gap: spacing.md,
+    marginTop: spacing.md,
   },
-  buttonPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.985 }],
+  filtersBlock: {
+    gap: spacing.xs,
   },
-  cardPressed: {
-    opacity: 0.9,
-    transform: [{ scale: 0.992 }],
+  formCardContent: {
+    gap: spacing.lg,
+  },
+  heroCardContent: {
+    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+  },
+  heroSubtitle: {
+    ...typography.body,
+    color: colors.textInverted,
+    marginTop: spacing.sm,
+  },
+  heroTitle: {
+    ...typography.title,
+    color: colors.textInverted,
+    marginTop: spacing.md,
+  },
+  optionPressed: {
+    opacity: 0.94,
+    transform: [{ scale: 0.99 }],
+  },
+  submitButton: {
+    marginTop: spacing.sm,
   },
 });

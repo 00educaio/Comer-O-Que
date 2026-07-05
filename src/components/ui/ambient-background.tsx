@@ -5,10 +5,16 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { colors } from '@/theme/theme';
 
-type AmbientTone = 'default' | 'home' | 'interview' | 'roulette' | 'match';
+export type AmbientTone =
+  | 'default'
+  | 'home'
+  | 'interview'
+  | 'roulette'
+  | 'match';
 
 type AmbientBackgroundProps = {
   children: ReactNode;
@@ -19,41 +25,53 @@ type AmbientBackgroundProps = {
 const palettes: Record<
   AmbientTone,
   {
+    background: [string, string, string];
     orbPrimary: string;
     orbSecondary: string;
+    ribbon: string;
     sparkle: string;
     stroke: string;
   }
 > = {
   default: {
-    orbPrimary: 'rgba(255, 141, 123, 0.14)',
-    orbSecondary: 'rgba(255, 216, 230, 0.32)',
-    sparkle: 'rgba(255, 229, 154, 0.6)',
-    stroke: 'rgba(227, 58, 57, 0.08)',
+    background: ['#FFF8F2', '#FFF0EA', '#FFE7DE'],
+    orbPrimary: 'rgba(225, 43, 45, 0.14)',
+    orbSecondary: 'rgba(255, 208, 223, 0.34)',
+    ribbon: 'rgba(255, 195, 167, 0.46)',
+    sparkle: 'rgba(255, 214, 108, 0.58)',
+    stroke: 'rgba(225, 43, 45, 0.08)',
   },
   home: {
-    orbPrimary: 'rgba(227, 58, 57, 0.12)',
-    orbSecondary: 'rgba(212, 243, 223, 0.62)',
-    sparkle: 'rgba(255, 229, 154, 0.75)',
-    stroke: 'rgba(255, 200, 175, 0.6)',
+    background: ['#FFF8F2', '#FFECE3', '#FFDCD0'],
+    orbPrimary: 'rgba(225, 43, 45, 0.18)',
+    orbSecondary: 'rgba(213, 242, 216, 0.66)',
+    ribbon: 'rgba(255, 135, 104, 0.18)',
+    sparkle: 'rgba(255, 214, 108, 0.72)',
+    stroke: 'rgba(255, 195, 167, 0.74)',
   },
   interview: {
-    orbPrimary: 'rgba(255, 216, 230, 0.54)',
-    orbSecondary: 'rgba(255, 200, 175, 0.44)',
-    sparkle: 'rgba(227, 58, 57, 0.12)',
-    stroke: 'rgba(227, 58, 57, 0.1)',
+    background: ['#FFF8F3', '#FFF0EA', '#FFE4D5'],
+    orbPrimary: 'rgba(255, 208, 223, 0.58)',
+    orbSecondary: 'rgba(255, 195, 167, 0.46)',
+    ribbon: 'rgba(225, 43, 45, 0.12)',
+    sparkle: 'rgba(225, 43, 45, 0.16)',
+    stroke: 'rgba(225, 43, 45, 0.1)',
   },
   roulette: {
-    orbPrimary: 'rgba(255, 229, 154, 0.42)',
-    orbSecondary: 'rgba(212, 243, 223, 0.5)',
-    sparkle: 'rgba(255, 139, 106, 0.2)',
-    stroke: 'rgba(255, 216, 230, 0.64)',
+    background: ['#FFF8F1', '#FFF2E3', '#FFE5C5'],
+    orbPrimary: 'rgba(255, 214, 108, 0.46)',
+    orbSecondary: 'rgba(213, 242, 216, 0.46)',
+    ribbon: 'rgba(255, 135, 104, 0.18)',
+    sparkle: 'rgba(255, 135, 104, 0.22)',
+    stroke: 'rgba(255, 208, 223, 0.64)',
   },
   match: {
-    orbPrimary: 'rgba(255, 216, 230, 0.56)',
-    orbSecondary: 'rgba(212, 243, 223, 0.42)',
-    sparkle: 'rgba(255, 229, 154, 0.5)',
-    stroke: 'rgba(227, 58, 57, 0.08)',
+    background: ['#FFF7F2', '#FFEDEA', '#FFE0DB'],
+    orbPrimary: 'rgba(255, 208, 223, 0.58)',
+    orbSecondary: 'rgba(213, 242, 216, 0.44)',
+    ribbon: 'rgba(225, 43, 45, 0.14)',
+    sparkle: 'rgba(255, 214, 108, 0.52)',
+    stroke: 'rgba(225, 43, 45, 0.09)',
   },
 };
 
@@ -67,6 +85,13 @@ export function AmbientBackground({
   return (
     <View style={[styles.container, style]}>
       <View pointerEvents="none" style={styles.layer}>
+        <LinearGradient
+          colors={palette.background}
+          end={{ x: 0.9, y: 1 }}
+          start={{ x: 0.06, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={[styles.ribbon, { backgroundColor: palette.ribbon }]} />
         <View
           style={[
             styles.orb,
@@ -89,6 +114,7 @@ export function AmbientBackground({
           ]}
         />
         <View style={[styles.ring, { borderColor: palette.stroke }]} />
+        <View style={[styles.ring, styles.ringSecondary, { borderColor: palette.stroke }]} />
         <View
           style={[
             styles.sparkle,
@@ -123,50 +149,65 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
   },
+  ribbon: {
+    borderRadius: 42,
+    height: 130,
+    left: '-8%',
+    position: 'absolute',
+    right: '-26%',
+    top: -48,
+    transform: [{ rotate: '-7deg' }],
+  },
   orb: {
     borderRadius: 999,
     position: 'absolute',
   },
   topOrb: {
-    height: 280,
-    right: -80,
-    top: -70,
-    width: 280,
+    height: 320,
+    right: -100,
+    top: -80,
+    width: 320,
   },
   sideOrb: {
-    height: 220,
-    left: -90,
-    top: 220,
-    width: 220,
+    height: 250,
+    left: -100,
+    top: 240,
+    width: 250,
   },
   bottomOrb: {
-    bottom: 80,
-    height: 150,
-    right: 30,
-    width: 150,
+    bottom: 90,
+    height: 170,
+    right: 28,
+    width: 170,
   },
   ring: {
     borderRadius: 999,
     borderWidth: 1,
-    height: 190,
-    left: -40,
+    height: 210,
+    left: -48,
     position: 'absolute',
-    top: 32,
-    width: 190,
+    top: 30,
+    width: 210,
+  },
+  ringSecondary: {
+    bottom: 160,
+    left: undefined,
+    right: -60,
+    top: undefined,
   },
   sparkle: {
     borderRadius: 999,
-    opacity: 0.7,
+    opacity: 0.78,
     position: 'absolute',
   },
   sparkleOne: {
     height: 18,
-    right: 68,
-    top: 148,
+    right: 70,
+    top: 164,
     width: 18,
   },
   sparkleTwo: {
-    bottom: 160,
+    bottom: 168,
     height: 12,
     left: 54,
     width: 12,

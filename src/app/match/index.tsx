@@ -1,319 +1,205 @@
-import { Image } from "expo-image";
-import { Link } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { AmbientBackground } from "@/components/ui/ambient-background";
-import { colors, radius, shadows, spacing, typography } from "@/theme/theme";
+import { ScreenShell } from '@/components/ui/app-shell';
+import {
+  AppButton,
+  AppPill,
+  Reveal,
+  SectionHeading,
+  SurfaceCard,
+} from '@/components/ui/app-primitives';
+import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
 
 const howItWorks = [
   {
-    emoji: "🧑‍🍳",
-    text: "Cada pessoa entra com apelido temporário e sem login.",
+    emoji: '🧑‍🍳',
+    text: 'Cada pessoa entra com apelido temporário e sem login.',
   },
   {
-    emoji: "💌",
-    text: "O convite funciona por código curto e por link compartilhável.",
+    emoji: '💌',
+    text: 'O convite funciona por código curto e por link compartilhável.',
   },
   {
-    emoji: "👍",
-    text: "Quando os dois curtem a mesma comida, o match aparece na hora.",
+    emoji: '👍',
+    text: 'Quando os dois curtem a mesma comida, o match aparece na hora.',
   },
 ] as const;
 
 const quickFacts = [
-  "Feito para 2 pessoas",
-  "Sala expira em 2 horas",
-  "Rodada continua após o match",
-];
+  'feito para 2 pessoas',
+  'sala expira em 2 horas',
+  'a rodada continua após o match',
+] as const;
 
 export default function MatchIndexScreen() {
   return (
-    <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-      style={styles.screen}
-    >
-      <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
-        <AmbientBackground style={styles.ambient} tone="match">
-          <View style={styles.heroCard}>
-            <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>ModoMatch online</Text>
+    <ScreenShell contentContainerStyle={styles.content} tone="match">
+      <Reveal>
+        <SurfaceCard
+          contentStyle={styles.heroCardContent}
+          gradientColors={['#FF8E66', '#E12B2D', '#7A1018']}>
+          <AppPill label="ModoMatch online" tone="cream" />
+
+          <Image
+            accessible={false}
+            contentFit="contain"
+            source={require('../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png')}
+            style={styles.heroImage}
+          />
+
+          <Text accessibilityRole="header" style={styles.heroTitle}>
+            Decidir em dupla agora tem presença de verdade.
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            Convide outra pessoa, votem nos cards e deixem a rodada seguir até pintar
+            mais de um match.
+          </Text>
+
+          <View style={styles.quickFacts}>
+            {quickFacts.map((fact) => (
+              <AppPill
+                key={fact}
+                label={fact}
+                style={styles.heroFact}
+                textStyle={styles.heroFactText}
+                tone="dark"
+              />
+            ))}
+          </View>
+        </SurfaceCard>
+      </Reveal>
+
+      <Reveal delay={90}>
+        <SectionHeading
+          eyebrow="Como funciona"
+          title="Uma dinâmica simples, rápida e muito mais gostosa de usar."
+        />
+      </Reveal>
+
+      <Reveal delay={140}>
+        <SurfaceCard contentStyle={styles.stepsCardContent}>
+          {howItWorks.map((step) => (
+            <View key={step.text} style={styles.stepRow}>
+              <View style={styles.stepEmojiBubble}>
+                <Text style={styles.stepEmoji}>{step.emoji}</Text>
+              </View>
+              <Text style={styles.stepText}>{step.text}</Text>
             </View>
+          ))}
+        </SurfaceCard>
+      </Reveal>
 
-            <Image
-              accessible={false}
-              contentFit="contain"
-              source={require("../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png")}
-              style={styles.heroImage}
-            />
+      <Reveal delay={210}>
+        <SurfaceCard style={styles.noticeCard} tone="sun">
+          <Text style={styles.noticeTitle}>Sala enxuta, experiência caprichada</Text>
+          <Text style={styles.noticeText}>
+            O v1 é focado em 2 pessoas, com filtro por categoria e começo manual pelo
+            criador.
+          </Text>
+        </SurfaceCard>
+      </Reveal>
 
-            <Text accessibilityRole="header" style={styles.title}>
-              Decidir em dupla agora tem cara de produto de verdade.
-            </Text>
-            <Text style={styles.subtitle}>
-              Convide outra pessoa, votem nos cards e deixem a rodada seguir até
-              pintar mais de um match.
-            </Text>
-
-            <View style={styles.quickFacts}>
-              {quickFacts.map((fact) => (
-                <View key={fact} style={styles.quickFactChip}>
-                  <Text style={styles.quickFactText}>{fact}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.stepsCard}>
-            <Text style={styles.sectionEyebrow}>Como funciona</Text>
-            <Text style={styles.sectionTitle}>
-              Uma dinâmica simples, rápida e gostosa de usar.
-            </Text>
-            <View style={styles.steps}>
-              {howItWorks.map((step) => (
-                <View key={step.text} style={styles.stepRow}>
-                  <View style={styles.stepEmojiBubble}>
-                    <Text style={styles.stepEmoji}>{step.emoji}</Text>
-                  </View>
-                  <Text style={styles.stepText}>{step.text}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.noticeCard}>
-            <Text style={styles.noticeTitle}>
-              Sala enxuta, experiência caprichada
-            </Text>
-            <Text style={styles.noticeText}>
-              O v1 é focado em 2 pessoas, com filtro por categoria e começo
-              manual pelo criador.
-            </Text>
-          </View>
-
-          <View style={styles.actions}>
-            <Link href="/match/create" asChild>
-              <Pressable
-                accessibilityHint="Abre a criação de uma nova sala"
-                accessibilityRole="button"
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  pressed && styles.buttonPressed,
-                ]}
-              >
-                <Text style={styles.secondaryButtonText}>Criar sala</Text>
-              </Pressable>
-            </Link>
-
-            <Link href="/match/join" asChild>
-              <Pressable
-                accessibilityHint="Abre a tela para entrar com um código"
-                accessibilityRole="button"
-                style={({ pressed }) => [
-                  styles.secondaryButton,
-                  pressed && styles.buttonPressed,
-                ]}
-              >
-                <Text style={styles.secondaryButtonText}>
-                  Entrar com código
-                </Text>
-              </Pressable>
-            </Link>
-          </View>
-        </AmbientBackground>
-      </SafeAreaView>
-    </ScrollView>
+      <Reveal delay={260} style={styles.actions}>
+        <AppButton onPress={() => router.push('/match/create')} title="Criar sala" />
+        <AppButton
+          onPress={() => router.push('/match/join')}
+          title="Entrar com código"
+          variant="secondary"
+        />
+      </Reveal>
+    </ScreenShell>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: colors.background,
-    flex: 1,
+  actions: {
+    gap: spacing.md,
   },
-  scrollContent: {
-    flexGrow: 1,
+  content: {
+    gap: spacing.xl,
   },
-  safeArea: {
-    alignItems: "center",
-    alignSelf: "center",
-    flex: 1,
-    maxWidth: 720,
+  heroCardContent: {
+    alignItems: 'center',
     paddingBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
-    width: "100%",
-  },
-  ambient: {
-    borderRadius: radius.xl,
-    paddingBottom: spacing.xl,
-    paddingTop: spacing.md,
-    width: "100%",
-  },
-  heroCard: {
-    ...shadows.floating,
-    alignItems: "center",
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.xl,
-    borderWidth: 2,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
-    paddingBottom: spacing.xl,
   },
-  heroBadge: {
-    alignSelf: "flex-start",
-    backgroundColor: colors.primaryGlow,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
+  heroFact: {
+    backgroundColor: 'rgba(49, 18, 23, 0.16)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
   },
-  heroBadgeText: {
-    ...typography.label,
-    color: colors.primaryDark,
-    textTransform: "uppercase",
+  heroFactText: {
+    color: colors.textInverted,
   },
   heroImage: {
     height: 260,
     marginTop: spacing.sm,
-    width: "100%",
+    width: '100%',
   },
-  title: {
-    ...typography.title,
-    color: colors.text,
-    marginTop: spacing.md,
-    textAlign: "center",
-  },
-  subtitle: {
+  heroSubtitle: {
     ...typography.body,
-    color: colors.textMuted,
+    color: colors.textInverted,
     marginTop: spacing.sm,
     maxWidth: 540,
-    textAlign: "center",
+    textAlign: 'center',
   },
-  quickFacts: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    justifyContent: "center",
-    marginTop: spacing.lg,
-  },
-  quickFactChip: {
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  quickFactText: {
-    ...typography.caption,
-    color: colors.text,
-  },
-  stepsCard: {
-    ...shadows.card,
-    backgroundColor: colors.surface,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    marginTop: spacing.xl,
-    padding: spacing.lg,
-    width: "100%",
-  },
-  sectionEyebrow: {
-    ...typography.label,
-    color: colors.primaryDark,
-    textTransform: "uppercase",
-  },
-  sectionTitle: {
-    ...typography.subheading,
-    color: colors.text,
-    marginTop: spacing.sm,
-  },
-  steps: {
-    gap: spacing.md,
-    marginTop: spacing.lg,
-  },
-  stepRow: {
-    alignItems: "center",
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    flexDirection: "row",
-    gap: spacing.md,
-    padding: spacing.md,
-  },
-  stepEmojiBubble: {
-    alignItems: "center",
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radius.md,
-    height: 56,
-    justifyContent: "center",
-    width: 56,
-  },
-  stepEmoji: {
-    fontSize: 28,
-  },
-  stepText: {
-    ...typography.body,
-    color: colors.text,
-    flex: 1,
+  heroTitle: {
+    ...typography.title,
+    color: colors.textInverted,
+    marginTop: spacing.md,
+    textAlign: 'center',
   },
   noticeCard: {
-    ...shadows.soft,
     backgroundColor: colors.yellow,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    marginTop: spacing.lg,
-    padding: spacing.lg,
-    width: "100%",
-  },
-  noticeTitle: {
-    ...typography.subheading,
-    color: colors.text,
   },
   noticeText: {
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.sm,
   },
-  actions: {
-    gap: spacing.md,
-    marginTop: spacing.xl,
-    width: "100%",
-  },
-  primaryButton: {
-    ...shadows.soft,
-    alignItems: "center",
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    justifyContent: "center",
-    minHeight: 62,
-    paddingHorizontal: spacing.xl,
-  },
-  secondaryButton: {
-    ...shadows.soft,
-    alignItems: "center",
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
-    borderRadius: radius.pill,
-    borderWidth: 2,
-    justifyContent: "center",
-    minHeight: 62,
-    paddingHorizontal: spacing.xl,
-  },
-  buttonPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.985 }],
-  },
-  primaryButtonText: {
-    ...typography.button,
-    color: colors.onPrimary,
-  },
-  secondaryButtonText: {
-    ...typography.button,
+  noticeTitle: {
+    ...typography.subheading,
     color: colors.text,
+  },
+  quickFacts: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    marginTop: spacing.lg,
+  },
+  stepEmoji: {
+    fontSize: 28,
+  },
+  stepEmojiBubble: {
+    ...shadows.soft,
+    alignItems: 'center',
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    height: 58,
+    justifyContent: 'center',
+    width: 58,
+  },
+  stepRow: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceWarm,
+    borderColor: colors.cardBorderSoft,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  stepText: {
+    ...typography.body,
+    color: colors.text,
+    flex: 1,
+  },
+  stepsCardContent: {
+    gap: spacing.md,
   },
 });

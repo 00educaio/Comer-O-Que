@@ -1,9 +1,43 @@
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
+import {
+  Fredoka_600SemiBold,
+  Fredoka_700Bold,
+} from '@expo-google-fonts/fredoka';
+import {
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_800ExtraBold,
+  Nunito_900Black,
+} from '@expo-google-fonts/nunito';
 
 import { colors, typography } from '@/theme/theme';
 
+SplashScreen.preventAutoHideAsync().catch(() => null);
+
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    Fredoka_600SemiBold,
+    Fredoka_700Bold,
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_800ExtraBold,
+    Nunito_900Black,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync().catch(() => null);
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <>
       <StatusBar style="dark" />
@@ -12,8 +46,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.background },
           headerBackButtonDisplayMode: 'minimal',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.surfaceRaised },
-          headerTintColor: colors.primaryDark,
+          headerStyle: { backgroundColor: colors.surface },
+          headerTintColor: colors.primaryStrong,
           headerTitleAlign: 'center',
           headerTitleStyle: {
             ...typography.button,
