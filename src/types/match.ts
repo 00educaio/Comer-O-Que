@@ -50,6 +50,13 @@ export type MatchVote = {
   createdAt: string;
 };
 
+export type MatchRoomMatch = {
+  roomId: string;
+  foodId: string;
+  matchedAt: string;
+  food: Food;
+};
+
 export type CreateMatchRoomResult = {
   roomId: string;
   code: string;
@@ -93,6 +100,7 @@ export type StoredMatchRoomSession = {
 };
 
 export type MatchSubscriptionCallbacks = {
+  onMatchesChange?: () => void;
   onParticipantsChange?: () => void;
   onRoomChange?: () => void;
   onVotesChange?: () => void;

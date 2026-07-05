@@ -9,6 +9,7 @@ import type {
   JoinMatchRoomResult,
   MatchFilterSlug,
   MatchParticipant,
+  MatchRoomMatch,
   MatchRoom,
   MatchRoomItem,
   MatchRoomStatus,
@@ -203,6 +204,19 @@ function parseMatchVote(value: unknown): MatchVote {
     foodId: readString(value, 'food_id'),
     vote,
     createdAt: readString(value, 'created_at'),
+  };
+}
+
+function parseMatchRoomMatch(value: unknown): MatchRoomMatch {
+  if (!isRecord(value)) {
+    throw new Error('Match remoto inválido.');
+  }
+
+  return {
+    roomId: readString(value, 'room_id'),
+    foodId: readString(value, 'food_id'),
+    matchedAt: readString(value, 'matched_at'),
+    food: parseFood(value.food),
   };
 }
 
@@ -693,6 +707,41 @@ export async function getMatchVotes({
   }
 }
 
+export async function getMatchRoomMatches(roomId: string): Promise<MatchRoomMatch[]> {
+  try {
+    const client = requireMatchSupabase();
+    const { data, error } = await client
+      .from('match_room_matches')
+      .select(`
+        room_id,
+        food_id,
+        matched_at,
+        food:foods!inner (
+          id,
+          name,
+          description,
+          emoji,
+          asset_key,
+          search_query,
+          food_tags (tag)
+        )
+      `)
+      .eq('room_id', roomId)
+      .order('matched_at', { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []).map(parseMatchRoomMatch);
+  } catch (error) {
+    throw toFriendlyMatchError(
+      error,
+      'Não conseguimos recuperar o histórico de matches dessa sala.',
+    );
+  }
+}
+
 export function subscribeToMatchRoom(
   roomId: string,
   callbacks: MatchSubscriptionCallbacks,
@@ -738,6 +787,18 @@ export function subscribeToMatchRoom(
         },
         () => {
           callbacks.onVotesChange?.();
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'match_room_matches',
+          filter: `room_id=eq.${roomId}`,
+        },
+        () => {
+          callbacks.onMatchesChange?.();
         },
       );
 

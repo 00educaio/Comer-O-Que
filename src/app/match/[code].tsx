@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { FoodArtwork } from '@/components/food-artwork';
 import { shareMatchInvite } from '@/lib/matchInvite';
 import { openNearbyPlaces } from '@/lib/maps';
 import {
@@ -21,6 +22,7 @@ import {
   getMatchParticipants,
   getMatchRoomByCode,
   getMatchRoomItems,
+  getMatchRoomMatches,
   getMatchVotes,
   getStoredMatchRoomSession,
   normalizeMatchRoomCode,
@@ -31,6 +33,7 @@ import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
 import type {
   MatchParticipant,
   MatchRoom,
+  MatchRoomMatch,
   MatchRoomItem,
   MatchVote,
   MatchVoteValue,
@@ -92,6 +95,7 @@ export default function MatchRoomScreen() {
   const [room, setRoom] = useState<MatchRoom | null>(null);
   const [participants, setParticipants] = useState<MatchParticipant[]>([]);
   const [items, setItems] = useState<MatchRoomItem[]>([]);
+  const [matches, setMatches] = useState<MatchRoomMatch[]>([]);
   const [votes, setVotes] = useState<MatchVote[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [shareErrorMessage, setShareErrorMessage] = useState<string | null>(null);
@@ -119,6 +123,7 @@ export default function MatchRoomScreen() {
           setRoom(expiredRoom);
           setParticipants([]);
           setItems([]);
+          setMatches([]);
           setVotes([]);
           return;
         }
@@ -137,6 +142,7 @@ export default function MatchRoomScreen() {
           setRoom(null);
           setParticipants([]);
           setItems([]);
+          setMatches([]);
           setVotes([]);
           return;
         }
@@ -147,19 +153,21 @@ export default function MatchRoomScreen() {
           setRoom(null);
           setParticipants([]);
           setItems([]);
+          setMatches([]);
           setVotes([]);
           setErrorMessage('Essa sala não está mais disponível.');
           await clearStoredMatchRoomSession(code);
           return;
         }
 
-        const shouldLoadCards =
+        const shouldLoadGameState =
           currentRoom.status === 'active' || currentRoom.status === 'matched';
 
-        const [nextParticipants, nextItems, nextVotes] = await Promise.all([
+        const [nextParticipants, nextItems, nextMatches, nextVotes] = await Promise.all([
           getMatchParticipants(currentRoom.id),
-          shouldLoadCards ? getMatchRoomItems(currentRoom.id) : Promise.resolve([]),
-          shouldLoadCards
+          shouldLoadGameState ? getMatchRoomItems(currentRoom.id) : Promise.resolve([]),
+          shouldLoadGameState ? getMatchRoomMatches(currentRoom.id) : Promise.resolve([]),
+          shouldLoadGameState
             ? getMatchVotes({
                 roomId: currentRoom.id,
                 participantId: storedSession.participantId,
@@ -170,6 +178,7 @@ export default function MatchRoomScreen() {
         setRoom(currentRoom);
         setParticipants(nextParticipants);
         setItems(nextItems);
+        setMatches(nextMatches);
         setVotes(nextVotes);
       } catch (error) {
         const message =
@@ -222,6 +231,10 @@ export default function MatchRoomScreen() {
         setRealtimeErrorMessage(null);
         void loadRoomState(false);
       },
+      onMatchesChange: () => {
+        setRealtimeErrorMessage(null);
+        void loadRoomState(false);
+      },
       onError: (error) => {
         setRealtimeErrorMessage(error.message);
       },
@@ -238,6 +251,9 @@ export default function MatchRoomScreen() {
     room?.matchFoodId != null
       ? items.find((item) => item.foodId === room.matchFoodId) ?? null
       : null;
+  const latestMatch = matches[0] ?? null;
+  const latestMatchFood = latestMatch?.food ?? matchedItem?.food ?? null;
+  const latestMatchAt = latestMatch?.matchedAt ?? room?.matchedAt ?? null;
 
   async function handleShareInvite() {
     if (isSharing) {
@@ -350,15 +366,15 @@ export default function MatchRoomScreen() {
     }
   }
 
-  async function handleOpenNearbyPlaces() {
-    if (!matchedItem) {
+  async function handleOpenNearbyPlaces(searchQuery: string) {
+    if (!searchQuery) {
       return;
     }
 
     setMapsErrorMessage(null);
 
     try {
-      await openNearbyPlaces(matchedItem.food.searchQuery);
+      await openNearbyPlaces(searchQuery);
     } catch (error) {
       const message =
         error instanceof Error
@@ -511,7 +527,7 @@ export default function MatchRoomScreen() {
               </Text>
             )}
           </View>
-        ) : room?.status === 'active' ? (
+        ) : room?.status === 'active' || room?.status === 'matched' ? (
           <View style={styles.section}>
             <View style={styles.gameHeaderCard}>
               <Text style={styles.roomEyebrow}>Sala {room.code}</Text>
@@ -521,11 +537,63 @@ export default function MatchRoomScreen() {
               <Text style={styles.feedbackText}>
                 {votedFoodIds.size}/{items.length} opções já passaram pela sua mão.
               </Text>
+              <Text style={styles.historySummaryText}>
+                {matches.length > 0
+                  ? `${matches.length} match${matches.length > 1 ? 'es' : ''} já saiu${
+                      matches.length > 1 ? 'ram' : ''
+                    } nessa sala.`
+                  : 'Curtam as mesmas comidas para montar o histórico da sala.'}
+              </Text>
             </View>
+
+            {latestMatchFood ? (
+              <View style={styles.latestMatchCard}>
+                <Text style={styles.latestMatchEyebrow}>Último match</Text>
+                <FoodArtwork
+                  containerStyle={styles.latestMatchArtwork}
+                  fallbackTextStyle={styles.latestMatchArtworkFallback}
+                  food={latestMatchFood}
+                  imageStyle={styles.latestMatchArtworkImage}
+                />
+                <Text accessibilityRole="header" style={styles.matchTitle}>
+                  Deu match!
+                </Text>
+                <Text style={styles.matchFoodName}>{latestMatchFood.name}</Text>
+                <Text style={styles.matchFoodDescription}>
+                  {latestMatchFood.description ??
+                    'Os dois curtiram essa opção. A sala continua aberta para render outros matches.'}
+                </Text>
+                {latestMatchAt ? (
+                  <Text style={styles.latestMatchMeta}>
+                    Match registrado às{' '}
+                    {new Date(latestMatchAt).toLocaleTimeString('pt-BR', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                    .
+                  </Text>
+                ) : null}
+                <Pressable
+                  accessibilityRole="button"
+                  onPress={() => void handleOpenNearbyPlaces(latestMatchFood.searchQuery)}
+                  style={({ pressed }) => [
+                    styles.primaryButton,
+                    styles.latestMatchButton,
+                    pressed && styles.buttonPressed,
+                  ]}>
+                  <Text style={styles.primaryButtonText}>Ver lugares próximos</Text>
+                </Pressable>
+              </View>
+            ) : null}
 
             {currentItem ? (
               <View style={styles.foodCard}>
-                <Text style={styles.foodEmoji}>{currentItem.food.emoji ?? '🍽️'}</Text>
+                <FoodArtwork
+                  containerStyle={styles.foodArtwork}
+                  fallbackTextStyle={styles.foodArtworkFallback}
+                  food={currentItem.food}
+                  imageStyle={styles.foodArtworkImage}
+                />
                 <Text style={styles.foodTitle}>{currentItem.food.name}</Text>
                 <Text style={styles.foodDescription}>
                   {currentItem.food.description ?? 'Uma opção caprichada esperando seu voto.'}
@@ -567,53 +635,55 @@ export default function MatchRoomScreen() {
               </View>
             )}
 
+            <View style={styles.historyCard}>
+              <Text style={styles.cardTitle}>Histórico de matches</Text>
+              {matches.length > 0 ? (
+                matches.map((match) => (
+                  <View key={`${match.roomId}:${match.foodId}`} style={styles.historyRow}>
+                    <FoodArtwork
+                      containerStyle={styles.historyArtwork}
+                      fallbackTextStyle={styles.historyArtworkFallback}
+                      food={match.food}
+                      imageStyle={styles.historyArtworkImage}
+                    />
+                    <View style={styles.historyTextContent}>
+                      <Text style={styles.historyFoodName}>{match.food.name}</Text>
+                      <Text style={styles.historyFoodDescription}>
+                        {match.food.description ??
+                          'Entrou para a lista de matches feitos nessa sala.'}
+                      </Text>
+                      <Text style={styles.historyMeta}>
+                        Match às{' '}
+                        {new Date(match.matchedAt).toLocaleTimeString('pt-BR', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </Text>
+                    </View>
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() => void handleOpenNearbyPlaces(match.food.searchQuery)}
+                      style={({ pressed }) => [
+                        styles.historyAction,
+                        pressed && styles.buttonPressed,
+                      ]}>
+                      <Text style={styles.historyActionText}>Maps</Text>
+                    </Pressable>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.feedbackText}>
+                  Ainda não rolou um match em comum. Quando os dois curtirem a mesma comida,
+                  ela aparece aqui.
+                </Text>
+              )}
+            </View>
+
             {errorMessage && (
               <Text accessibilityLiveRegion="polite" style={styles.inlineErrorText}>
                 {errorMessage}
               </Text>
             )}
-          </View>
-        ) : room?.status === 'matched' ? (
-          <View style={styles.section}>
-            <View style={styles.matchCard}>
-              <Text style={styles.bigEmoji}>{matchedItem?.food.emoji ?? '💞'}</Text>
-              <Text accessibilityRole="header" style={styles.matchTitle}>
-                Deu match!
-              </Text>
-              <Text style={styles.matchFoodName}>
-                {matchedItem?.food.name ?? 'A comida escolhida'}
-              </Text>
-              <Text style={styles.matchFoodDescription}>
-                {matchedItem?.food.description ??
-                  'Os dois curtiram a mesma opção e a fome agradece.'}
-              </Text>
-            </View>
-
-            <View style={styles.buttonGroup}>
-              <Pressable
-                accessibilityRole="button"
-                disabled={!matchedItem}
-                onPress={() => void handleOpenNearbyPlaces()}
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  !matchedItem && styles.buttonDisabled,
-                  pressed && styles.buttonPressed,
-                ]}>
-                <Text style={styles.primaryButtonText}>Ver lugares próximos</Text>
-              </Pressable>
-
-              <Link href="/" asChild>
-                <Pressable
-                  accessibilityRole="button"
-                  style={({ pressed }) => [
-                    styles.secondaryButton,
-                    pressed && styles.buttonPressed,
-                  ]}>
-                  <Text style={styles.secondaryButtonText}>Voltar para Home</Text>
-                </Pressable>
-              </Link>
-            </View>
-
             {mapsErrorMessage && (
               <Text accessibilityLiveRegion="polite" style={styles.inlineErrorText}>
                 {mapsErrorMessage}
@@ -833,6 +903,49 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     padding: spacing.lg,
   },
+  historySummaryText: {
+    ...typography.body,
+    color: colors.textMuted,
+  },
+  latestMatchCard: {
+    ...shadows.card,
+    alignItems: 'center',
+    backgroundColor: colors.mint,
+    borderColor: colors.cardBorder,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    gap: spacing.sm,
+    padding: spacing.lg,
+  },
+  latestMatchEyebrow: {
+    ...typography.caption,
+    color: colors.textMuted,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+  },
+  latestMatchArtwork: {
+    borderRadius: radius.lg,
+    height: 180,
+    marginTop: spacing.sm,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  latestMatchArtworkImage: {
+    height: '100%',
+    width: '100%',
+  },
+  latestMatchArtworkFallback: {
+    fontSize: 68,
+  },
+  latestMatchMeta: {
+    ...typography.caption,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  latestMatchButton: {
+    marginTop: spacing.md,
+    width: '100%',
+  },
   foodCard: {
     ...shadows.card,
     alignItems: 'center',
@@ -842,8 +955,18 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: spacing.lg,
   },
-  foodEmoji: {
-    fontSize: 64,
+  foodArtwork: {
+    borderRadius: radius.lg,
+    height: 220,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  foodArtworkImage: {
+    height: '100%',
+    width: '100%',
+  },
+  foodArtworkFallback: {
+    fontSize: 72,
   },
   foodTitle: {
     ...typography.title,
@@ -866,14 +989,39 @@ const styles = StyleSheet.create({
   voteButton: {
     flex: 1,
   },
-  matchCard: {
+  historyCard: {
     ...shadows.card,
-    alignItems: 'center',
-    backgroundColor: colors.mint,
+    backgroundColor: colors.surface,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
     borderWidth: 2,
-    padding: spacing.xl,
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  historyRow: {
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  historyArtwork: {
+    borderRadius: radius.md,
+    flexShrink: 0,
+    height: 72,
+    overflow: 'hidden',
+    width: 72,
+  },
+  historyArtworkImage: {
+    height: '100%',
+    width: '100%',
+  },
+  historyArtworkFallback: {
+    fontSize: 34,
+  },
+  historyTextContent: {
+    flex: 1,
   },
   matchTitle: {
     ...typography.title,
@@ -892,6 +1040,35 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.sm,
     textAlign: 'center',
+  },
+  historyFoodName: {
+    ...typography.button,
+    color: colors.text,
+  },
+  historyFoodDescription: {
+    ...typography.body,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
+  historyMeta: {
+    ...typography.caption,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
+  historyAction: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    backgroundColor: colors.surface,
+    borderColor: colors.cardBorder,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    justifyContent: 'center',
+    minWidth: 72,
+    paddingHorizontal: spacing.md,
+  },
+  historyActionText: {
+    ...typography.button,
+    color: colors.text,
   },
   buttonGroup: {
     gap: spacing.md,

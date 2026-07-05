@@ -61,6 +61,8 @@ O app já possui:
 - ModoMatch online com sala por código e link compartilhável.
 - ModoMatch com apelido temporário, começo manual pelo criador e expiração de 2 horas.
 - Match quando as 2 pessoas curtirem a mesma comida do catálogo filtrado.
+- A rodada do ModoMatch continua mesmo depois de um match, acumulando histórico na sala.
+- Resultados de comida devem preferir imagem remota via Supabase Storage e cair para emoji quando necessário.
 
 ## Escopo vigente — ModoMatch v1 online
 
@@ -81,6 +83,7 @@ Decisões obrigatórias:
   - **Gostei**;
   - **Passo**.
 - Quando os 2 participantes derem **Gostei** na mesma comida, aparece **Deu match!**.
+- Depois de um match, a sala continua ativa para permitir novos matches e mostrar histórico.
 - A lista de comidas deve vir do catálogo existente.
 - Ao criar a sala, o usuário escolhe um filtro:
   - `tudo`;
@@ -108,7 +111,8 @@ Fluxo de criação:
 8. Criador aperta **Começar**.
 9. Os dois votam nos cards.
 10. Quando ambos curtirem a mesma comida, os dois veem **Deu match!**.
-11. O resultado mostra botão **Ver lugares próximos**.
+11. A sala registra esse match no histórico e continua ativa para mais votos.
+12. O último match mostra botão **Ver lugares próximos**.
 
 Fluxo de entrada:
 
@@ -154,6 +158,7 @@ Tabelas esperadas:
 - `match_participants`
 - `match_room_items`
 - `match_votes`
+- `match_room_matches`
 
 Requisitos:
 
@@ -235,6 +240,7 @@ O app deve atualizar via realtime:
 - entrada de participantes;
 - mudança de status da sala;
 - match encontrado.
+- histórico de matches da sala.
 
 Sempre faça cleanup das subscriptions ao desmontar telas.
 
@@ -290,20 +296,23 @@ A tela da sala deve tratar os estados:
 ### `active`
 
 - Mostrar cards em sequência.
-- Cada card deve mostrar emoji, nome e descrição.
+- Cada card deve mostrar imagem da comida quando disponível, com fallback para emoji,
+  além de nome e descrição.
 - Mostrar botões **Passo** e **Gostei**.
 - Depois do voto, avançar para o próximo card ainda não votado pelo participante.
 - Desabilitar botões durante envio do voto.
 - Continuar ouvindo realtime para detectar match.
+- Quando houver match, destacar o último **Deu match!** sem encerrar a rodada.
+- Mostrar botão **Ver lugares próximos** para o último match.
+- Mostrar histórico de matches feitos na sala.
 - Se o participante acabar todos os cards sem match, mostrar mensagem amigável e
   continuar ouvindo atualizações da sala.
 
 ### `matched`
 
-- Mostrar **Deu match!**.
-- Mostrar emoji, nome e descrição da comida.
-- Mostrar botão **Ver lugares próximos** usando `openNearbyPlaces(search_query)`.
-- Mostrar botão para voltar para Home.
+- Se alguma sala legada ainda chegar com status `matched`, trate esse estado como a
+  mesma experiência do estado `active`, com o último match em destaque e a rodada
+  ainda disponível para render novos matches.
 
 ### `expired`
 
@@ -324,6 +333,14 @@ A tela da sala deve tratar os estados:
   amigável quando Supabase ou realtime estiverem indisponíveis.
 - Dados remotos devem ser validados antes de substituir um cache válido.
 - O fallback deve acompanhar mudanças estruturais do catálogo.
+
+## Imagens das comidas
+
+- As imagens das comidas devem ficar no **Supabase Storage**, em bucket público,
+  e o catálogo deve apontar para elas por `foods.asset_key`.
+- O app deve tentar carregar a imagem primeiro e usar o emoji como fallback quando
+  o arquivo não existir ou falhar.
+- Não salve binários de imagem em tabelas Postgres do catálogo.
 
 ## Mapas
 
@@ -402,7 +419,7 @@ Não implemente sem decisão explícita:
 - ModoMatch com mais de 2 pessoas na interface.
 - Chat.
 - Push notifications.
-- Histórico de partidas.
+- Histórico global de partidas por usuário.
 - Lista de amigos.
 - Ranking social.
 - Monetização.

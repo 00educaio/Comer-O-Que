@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { FoodArtwork } from '@/components/food-artwork';
 import { openNearbyPlaces } from '@/lib/maps';
 import { drawWeightedFood } from '@/lib/roulette';
 import { getCatalog } from '@/services/catalogService';
@@ -291,7 +292,12 @@ export default function RouletteScreen() {
                     <View style={styles.optionChips}>
                       {selectedGroup.foods.map(({ food }) => (
                         <View key={food.id} style={styles.optionChip}>
-                          <Text style={styles.optionEmoji}>{food.emoji ?? '🍽️'}</Text>
+                          <FoodArtwork
+                            containerStyle={styles.optionArtwork}
+                            fallbackTextStyle={styles.optionArtworkFallback}
+                            food={food}
+                            imageStyle={styles.optionArtworkImage}
+                          />
                           <Text style={styles.optionName}>{food.name}</Text>
                         </View>
                       ))}
@@ -304,9 +310,16 @@ export default function RouletteScreen() {
                     accessibilityLiveRegion={result ? 'polite' : 'none'}
                     style={styles.foodResult}>
                     {result && <Text style={styles.resultLabel}>Deu:</Text>}
-                    <Text style={[styles.foodEmoji, isSpinning && styles.foodEmojiSpinning]}>
-                      {displayedFood.emoji ?? '🍽️'}
-                    </Text>
+                    <FoodArtwork
+                      key={displayedFood.id}
+                      containerStyle={[
+                        styles.foodArtwork,
+                        isSpinning && styles.foodArtworkSpinning,
+                      ]}
+                      fallbackTextStyle={styles.foodArtworkFallback}
+                      food={displayedFood}
+                      imageStyle={styles.foodArtworkImage}
+                    />
                     <Text style={styles.foodName}>{displayedFood.name}</Text>
                     {result && (
                       <Text style={styles.foodDescription}>
@@ -576,7 +589,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
-  optionEmoji: {
+  optionArtwork: {
+    borderRadius: radius.pill,
+    height: 26,
+    width: 26,
+  },
+  optionArtworkImage: {
+    borderRadius: radius.pill,
+  },
+  optionArtworkFallback: {
     fontSize: 18,
   },
   optionName: {
@@ -606,11 +627,19 @@ const styles = StyleSheet.create({
     ...typography.heading,
     color: colors.primary,
   },
-  foodEmoji: {
-    fontSize: 70,
-    marginTop: spacing.xs,
+  foodArtwork: {
+    borderRadius: radius.lg,
+    height: 148,
+    marginTop: spacing.sm,
+    width: 148,
   },
-  foodEmojiSpinning: {
+  foodArtworkImage: {
+    borderRadius: radius.lg,
+  },
+  foodArtworkFallback: {
+    fontSize: 70,
+  },
+  foodArtworkSpinning: {
     transform: [{ scale: 0.94 }, { rotate: '-3deg' }],
   },
   foodName: {

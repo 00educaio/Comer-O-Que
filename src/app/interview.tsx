@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { FoodArtwork } from '@/components/food-artwork';
 import { interviewQuestions } from '@/data/interviewQuestions';
 import { openNearbyPlaces } from '@/lib/maps';
 import { getCatalog } from '@/services/catalogService';
@@ -349,9 +350,16 @@ function RecommendationCard({
     <View style={[styles.resultCard, isBest && styles.bestResultCard]}>
       {isBest && <Text style={styles.bestLabel}>MELHOR PALPITE</Text>}
       <View style={styles.resultHeading}>
-        <Text style={[styles.resultEmoji, isBest && styles.bestResultEmoji]}>
-          {food.emoji ?? '🍽️'}
-        </Text>
+        <FoodArtwork
+          key={food.id}
+          containerStyle={[styles.resultArtwork, isBest && styles.bestResultArtwork]}
+          fallbackTextStyle={[
+            styles.resultArtworkFallback,
+            isBest && styles.bestResultArtworkFallback,
+          ]}
+          food={food}
+          imageStyle={[styles.resultArtworkImage, isBest && styles.bestResultArtworkImage]}
+        />
         <View style={styles.resultCopy}>
           <Text style={[styles.resultName, isBest && styles.bestResultName]}>
             {food.name}
@@ -574,10 +582,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: spacing.md,
   },
-  resultEmoji: {
+  resultArtwork: {
+    borderRadius: radius.md,
+    height: 74,
+    width: 74,
+  },
+  resultArtworkImage: {
+    borderRadius: radius.md,
+  },
+  resultArtworkFallback: {
     fontSize: 42,
   },
-  bestResultEmoji: {
+  bestResultArtwork: {
+    borderRadius: radius.lg,
+    height: 112,
+    width: 112,
+  },
+  bestResultArtworkImage: {
+    borderRadius: radius.lg,
+  },
+  bestResultArtworkFallback: {
     fontSize: 64,
   },
   resultCopy: {
