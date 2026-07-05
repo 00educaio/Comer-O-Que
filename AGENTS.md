@@ -47,6 +47,7 @@ Antes de iniciar uma tarefa:
 O app já possui:
 
 - Home com acesso ao Modo Entrevista, Roleta e ModoMatch.
+- Área de **Sugestões** para enviar nome e mensagem com sugestão, elogio ou problema.
 - Catálogo e configuração lidos do Supabase.
 - Cache local e fallback para uso sem internet ou sem Supabase.
 - Quatro grupos de roleta:
@@ -63,6 +64,7 @@ O app já possui:
 - Match quando as 2 pessoas curtirem a mesma comida do catálogo filtrado.
 - A rodada do ModoMatch continua mesmo depois de um match, acumulando histórico na sala.
 - Resultados de comida devem preferir imagem remota via Supabase Storage e cair para emoji quando necessário.
+- Mensagens da área de Sugestões devem ser salvas no Supabase apenas com `name` e `message`.
 
 ## Escopo vigente — ModoMatch v1 online
 

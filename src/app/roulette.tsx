@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
 import { AmbientBackground } from '@/components/ui/ambient-background';
 import { openNearbyPlaces } from '@/lib/maps';
@@ -43,6 +44,7 @@ export default function RouletteScreen() {
   const [mapsError, setMapsError] = useState<string | null>(null);
   const previewTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const resultTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const celebrationKey = result ? `${selectedGroup?.id ?? 'roulette'}:${result.id}` : null;
 
   const clearSpinTimers = useCallback(() => {
     if (previewTimerRef.current) {
@@ -418,6 +420,12 @@ export default function RouletteScreen() {
             </>
           )}
         </AmbientBackground>
+        <CelebrationOverlay
+          message="A roleta escolheu uma boa pedida para agora."
+          title="Saiu o resultado!"
+          tone="roulette"
+          triggerKey={celebrationKey}
+        />
       </SafeAreaView>
     </ScrollView>
   );

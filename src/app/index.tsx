@@ -143,6 +143,46 @@ export default function HomeScreen() {
               </Link>
             ))}
           </View>
+
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionEyebrow}>Sugestões</Text>
+            <Text style={styles.sectionTitle}>
+              Encontrou algo para melhorar ou quer mandar um elogio?
+            </Text>
+          </View>
+
+          <Link href="./suggestions" asChild>
+            <Pressable
+              accessibilityHint="Abre a área para enviar sugestão, elogio ou problema"
+              accessibilityLabel="Abrir sugestões"
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.feedbackCard,
+                pressed && styles.cardPressed,
+              ]}>
+              <View style={styles.cardTopRow}>
+                <View style={styles.cardEmojiBubble}>
+                  <Text style={styles.cardEmoji}>💌</Text>
+                </View>
+                <View style={styles.cardArrowBubble}>
+                  <Text style={styles.arrow}>›</Text>
+                </View>
+              </View>
+
+              <Text style={styles.cardTitle}>Abrir caixinha de sugestões</Text>
+              <Text style={styles.cardDescription}>
+                Envie seu nome e uma mensagem com sugestão, elogio ou relato de
+                problema.
+              </Text>
+
+              <View style={styles.cardFooter}>
+                <Text style={styles.cardHelper}>Seu recado vai direto para o Supabase.</Text>
+                <View style={styles.ctaPill}>
+                  <Text style={styles.ctaPillText}>Enviar mensagem</Text>
+                </View>
+              </View>
+            </Pressable>
+          </Link>
         </AmbientBackground>
       </SafeAreaView>
     </ScrollView>
@@ -260,6 +300,16 @@ const styles = StyleSheet.create({
   options: {
     gap: spacing.md,
     marginTop: spacing.lg,
+  },
+  feedbackCard: {
+    ...shadows.card,
+    backgroundColor: colors.peach,
+    borderColor: colors.cardBorder,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    marginTop: spacing.lg,
+    minHeight: 194,
+    padding: spacing.lg,
   },
   card: {
     ...shadows.card,

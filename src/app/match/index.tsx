@@ -1,32 +1,40 @@
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from "expo-image";
+import { Link } from "expo-router";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AmbientBackground } from '@/components/ui/ambient-background';
-import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
+import { AmbientBackground } from "@/components/ui/ambient-background";
+import { colors, radius, shadows, spacing, typography } from "@/theme/theme";
 
 const howItWorks = [
-  { emoji: '🧑‍🍳', text: 'Cada pessoa entra com apelido temporário e sem login.' },
-  { emoji: '💌', text: 'O convite funciona por código curto e por link compartilhável.' },
-  { emoji: '👍', text: 'Quando os dois curtem a mesma comida, o match aparece na hora.' },
+  {
+    emoji: "🧑‍🍳",
+    text: "Cada pessoa entra com apelido temporário e sem login.",
+  },
+  {
+    emoji: "💌",
+    text: "O convite funciona por código curto e por link compartilhável.",
+  },
+  {
+    emoji: "👍",
+    text: "Quando os dois curtem a mesma comida, o match aparece na hora.",
+  },
 ] as const;
 
-const quickFacts = ['Feito para 2 pessoas', 'Sala expira em 2 horas', 'Rodada continua após o match'];
+const quickFacts = [
+  "Feito para 2 pessoas",
+  "Sala expira em 2 horas",
+  "Rodada continua após o match",
+];
 
 export default function MatchIndexScreen() {
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}
-      style={styles.screen}>
-      <SafeAreaView edges={['bottom']} style={styles.safeArea}>
+      style={styles.screen}
+    >
+      <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
         <AmbientBackground style={styles.ambient} tone="match">
           <View style={styles.heroCard}>
             <View style={styles.heroBadge}>
@@ -36,7 +44,7 @@ export default function MatchIndexScreen() {
             <Image
               accessible={false}
               contentFit="contain"
-              source={require('../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png')}
+              source={require("../../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png")}
               style={styles.heroImage}
             />
 
@@ -44,8 +52,8 @@ export default function MatchIndexScreen() {
               Decidir em dupla agora tem cara de produto de verdade.
             </Text>
             <Text style={styles.subtitle}>
-              Convide outra pessoa, votem nos cards e deixem a rodada seguir até pintar
-              mais de um match.
+              Convide outra pessoa, votem nos cards e deixem a rodada seguir até
+              pintar mais de um match.
             </Text>
 
             <View style={styles.quickFacts}>
@@ -59,7 +67,9 @@ export default function MatchIndexScreen() {
 
           <View style={styles.stepsCard}>
             <Text style={styles.sectionEyebrow}>Como funciona</Text>
-            <Text style={styles.sectionTitle}>Uma dinâmica simples, rápida e gostosa de usar.</Text>
+            <Text style={styles.sectionTitle}>
+              Uma dinâmica simples, rápida e gostosa de usar.
+            </Text>
             <View style={styles.steps}>
               {howItWorks.map((step) => (
                 <View key={step.text} style={styles.stepRow}>
@@ -73,10 +83,12 @@ export default function MatchIndexScreen() {
           </View>
 
           <View style={styles.noticeCard}>
-            <Text style={styles.noticeTitle}>Sala enxuta, experiência caprichada</Text>
+            <Text style={styles.noticeTitle}>
+              Sala enxuta, experiência caprichada
+            </Text>
             <Text style={styles.noticeText}>
-              O v1 é focado em 2 pessoas, com filtro por categoria e começo manual pelo
-              criador.
+              O v1 é focado em 2 pessoas, com filtro por categoria e começo
+              manual pelo criador.
             </Text>
           </View>
 
@@ -88,8 +100,9 @@ export default function MatchIndexScreen() {
                 style={({ pressed }) => [
                   styles.primaryButton,
                   pressed && styles.buttonPressed,
-                ]}>
-                <Text style={styles.primaryButtonText}>Criar sala</Text>
+                ]}
+              >
+                <Text style={styles.secondaryButtonText}>Criar sala</Text>
               </Pressable>
             </Link>
 
@@ -100,8 +113,11 @@ export default function MatchIndexScreen() {
                 style={({ pressed }) => [
                   styles.secondaryButton,
                   pressed && styles.buttonPressed,
-                ]}>
-                <Text style={styles.secondaryButtonText}>Entrar com código</Text>
+                ]}
+              >
+                <Text style={styles.secondaryButtonText}>
+                  Entrar com código
+                </Text>
               </Pressable>
             </Link>
           </View>
@@ -120,23 +136,23 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   safeArea: {
-    alignItems: 'center',
-    alignSelf: 'center',
+    alignItems: "center",
+    alignSelf: "center",
     flex: 1,
     maxWidth: 720,
     paddingBottom: spacing.xl,
     paddingHorizontal: spacing.lg,
-    width: '100%',
+    width: "100%",
   },
   ambient: {
     borderRadius: radius.xl,
     paddingBottom: spacing.xl,
     paddingTop: spacing.md,
-    width: '100%',
+    width: "100%",
   },
   heroCard: {
     ...shadows.floating,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.xl,
@@ -146,7 +162,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   heroBadge: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     backgroundColor: colors.primaryGlow,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
@@ -155,31 +171,31 @@ const styles = StyleSheet.create({
   heroBadgeText: {
     ...typography.label,
     color: colors.primaryDark,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   heroImage: {
     height: 260,
     marginTop: spacing.sm,
-    width: '100%',
+    width: "100%",
   },
   title: {
     ...typography.title,
     color: colors.text,
     marginTop: spacing.md,
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.sm,
     maxWidth: 540,
-    textAlign: 'center',
+    textAlign: "center",
   },
   quickFacts: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: spacing.sm,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginTop: spacing.lg,
   },
   quickFactChip: {
@@ -202,12 +218,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginTop: spacing.xl,
     padding: spacing.lg,
-    width: '100%',
+    width: "100%",
   },
   sectionEyebrow: {
     ...typography.label,
     color: colors.primaryDark,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   sectionTitle: {
     ...typography.subheading,
@@ -219,21 +235,21 @@ const styles = StyleSheet.create({
     marginTop: spacing.lg,
   },
   stepRow: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.surfaceWarm,
     borderColor: colors.cardBorderSoft,
     borderRadius: radius.md,
     borderWidth: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: spacing.md,
     padding: spacing.md,
   },
   stepEmojiBubble: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.surfaceRaised,
     borderRadius: radius.md,
     height: 56,
-    justifyContent: 'center',
+    justifyContent: "center",
     width: 56,
   },
   stepEmoji: {
@@ -252,7 +268,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginTop: spacing.lg,
     padding: spacing.lg,
-    width: '100%',
+    width: "100%",
   },
   noticeTitle: {
     ...typography.subheading,
@@ -266,25 +282,25 @@ const styles = StyleSheet.create({
   actions: {
     gap: spacing.md,
     marginTop: spacing.xl,
-    width: '100%',
+    width: "100%",
   },
   primaryButton: {
     ...shadows.soft,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
-    justifyContent: 'center',
+    justifyContent: "center",
     minHeight: 62,
     paddingHorizontal: spacing.xl,
   },
   secondaryButton: {
     ...shadows.soft,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.pill,
     borderWidth: 2,
-    justifyContent: 'center',
+    justifyContent: "center",
     minHeight: 62,
     paddingHorizontal: spacing.xl,
   },

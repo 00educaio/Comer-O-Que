@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
 import { AmbientBackground } from '@/components/ui/ambient-background';
 import { shareMatchInvite } from '@/lib/matchInvite';
@@ -260,6 +261,10 @@ export default function MatchRoomScreen() {
   const latestMatch = matches[0] ?? null;
   const latestMatchFood = latestMatch?.food ?? matchedItem?.food ?? null;
   const latestMatchAt = latestMatch?.matchedAt ?? room?.matchedAt ?? null;
+  const celebrationKey =
+    latestMatchFood && latestMatchAt
+      ? `${latestMatchFood.id}:${latestMatchAt}`
+      : latestMatchFood?.id ?? null;
   const voteProgress = items.length > 0
     ? Math.round((votedFoodIds.size / items.length) * 100)
     : 0;
@@ -762,6 +767,13 @@ export default function MatchRoomScreen() {
             </Text>
           )}
         </AmbientBackground>
+        <CelebrationOverlay
+          message="Os dois curtiram a mesma comida. Hora de comemorar essa vitória."
+          skipInitialTrigger
+          title="Deu match!"
+          tone="match"
+          triggerKey={celebrationKey}
+        />
       </SafeAreaView>
     </ScrollView>
   );

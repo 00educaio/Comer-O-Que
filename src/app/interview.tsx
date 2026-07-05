@@ -13,6 +13,7 @@ import {
   ErrorIllustration,
   LoadingIllustration,
 } from '@/components/feedback-illustration';
+import { CelebrationOverlay } from '@/components/celebration-overlay';
 import { FoodArtwork } from '@/components/food-artwork';
 import { AmbientBackground } from '@/components/ui/ambient-background';
 import { interviewQuestions } from '@/data/interviewQuestions';
@@ -43,6 +44,7 @@ export default function InterviewScreen() {
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [mapsError, setMapsError] = useState<string | null>(null);
   const currentQuestion = interviewQuestions[currentQuestionIndex];
+  const celebrationKey = recommendations?.[0]?.food.id ?? null;
 
   const loadCatalog = useCallback(async () => {
     setIsLoading(true);
@@ -358,6 +360,12 @@ export default function InterviewScreen() {
             </View>
           ) : null}
         </AmbientBackground>
+        <CelebrationOverlay
+          message="Seu melhor palpite saiu do forno e chegou prontinho."
+          title="Palpite servido!"
+          tone="interview"
+          triggerKey={celebrationKey}
+        />
       </SafeAreaView>
     </ScrollView>
   );
