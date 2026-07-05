@@ -18,7 +18,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="interview" options={{ title: 'Modo Entrevista' }} />
         <Stack.Screen name="roulette" options={{ title: 'Roleta' }} />
-        <Stack.Screen name="match-coming-soon" options={{ title: 'ModoMatch' }} />
+        <Stack.Screen name="match/index" options={{ title: 'ModoMatch' }} />
+        <Stack.Screen name="match/create" options={{ title: 'Criar sala' }} />
+        <Stack.Screen name="match/join" options={{ title: 'Entrar na sala' }} />
+        <Stack.Screen name="match/[code]" options={{ title: 'Sala ModoMatch' }} />
       </Stack>
     </>
   );

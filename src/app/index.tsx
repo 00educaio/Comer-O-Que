@@ -16,7 +16,6 @@ type HomeOption = {
   description: string;
   emoji: string;
   href: Href;
-  isComingSoon?: boolean;
   title: string;
   tone: ViewStyle['backgroundColor'];
 };
@@ -38,10 +37,9 @@ const homeOptions: HomeOption[] = [
   },
   {
     title: 'ModoMatch',
-    description: 'Escolham juntos, sem duelo de “tanto faz”.',
+    description: 'Escolha comida junto com outra pessoa.',
     emoji: '💞',
-    href: '/match-coming-soon',
-    isComingSoon: true,
+    href: '/match',
     tone: colors.mint,
   },
 ];
@@ -82,7 +80,7 @@ export default function HomeScreen() {
             <Link key={option.title} href={option.href} asChild>
               <Pressable
                 accessibilityHint={option.description}
-                accessibilityLabel={`${option.title}${option.isComingSoon ? ', em breve' : ''}`}
+                accessibilityLabel={option.title}
                 accessibilityRole="button"
                 style={({ pressed }) => [
                   styles.card,
@@ -98,7 +96,6 @@ export default function HomeScreen() {
                 <View style={styles.cardCopy}>
                   <View style={styles.cardTitleRow}>
                     <Text style={styles.cardTitle}>{option.title}</Text>
-                    {option.isComingSoon && <Text style={styles.badge}>EM BREVE</Text>}
                   </View>
                   <Text style={styles.cardDescription}>{option.description}</Text>
                 </View>
@@ -191,21 +188,10 @@ const styles = StyleSheet.create({
   cardTitleRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
   },
   cardTitle: {
     ...typography.heading,
     color: colors.text,
-  },
-  badge: {
-    ...typography.caption,
-    backgroundColor: colors.primary,
-    borderRadius: radius.pill,
-    color: colors.onPrimary,
-    overflow: 'hidden',
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
   },
   cardDescription: {
     ...typography.body,
