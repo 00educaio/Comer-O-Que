@@ -709,63 +709,11 @@ Requisitos:
 
 ---
 
-## 9. Fase 8 — Qualidade do MVP
+Revise
 
-### Task 8.1 — Estados vazios e erros
+## 9. Fase 8 — Preparação Android
 
-Prompt:
-
-```txt
-Revise o app para estados vazios, erros e loading.
-
-Requisitos:
-- Toda tela que carrega dados deve ter loading.
-- Se o Supabase falhar, o app deve continuar com cache/fallback.
-- Mensagens devem ser amigáveis e no tom do app.
-- Não mostrar erros técnicos para usuário final.
-```
-
-### Task 8.2 — Revisão visual
-
-Prompt:
-
-```txt
-Faça uma revisão visual geral do app.
-
-Requisitos:
-- Manter UI cartunesca.
-- Usar vermelho desejo como cor principal.
-- Cores vivas, mas sem poluição visual.
-- Botões grandes.
-- Cards arredondados.
-- Textos curtos e divertidos.
-- Poucas animações.
-- Garantir boa leitura em Android.
-```
-
-### Task 8.3 — Checklist manual
-
-Antes de pensar em publicar:
-
-```txt
-[ ] App abre sem crash
-[ ] Home navega para todas as telas
-[ ] Roleta carrega as quatro categorias
-[ ] Roleta funciona com Supabase
-[ ] Roleta funciona sem Supabase
-[ ] Sorteio ponderado funciona
-[ ] Botão Ver lugares próximos abre Google Maps
-[ ] Modo Entrevista responde todas as perguntas
-[ ] Modo Entrevista mostra 5 opções
-[ ] ModoMatch mostra aviso em breve
-[ ] Nenhum erro técnico aparece para o usuário
-```
-
----
-
-## 10. Fase 9 — Preparação Android
-
-### Task 9.1 — Configurar app.json/app.config.ts
+### [x] Task 8.1 — Configurar app.json/app.config.ts
 
 Prompt:
 
@@ -782,7 +730,7 @@ Requisitos:
 - Não pedir localização.
 ```
 
-### Task 9.2 — Primeiro build interno
+### Task 8.2 — Primeiro build interno
 
 Comandos:
 
@@ -795,7 +743,7 @@ eas build -p android --profile preview
 
 ---
 
-## 11. Fase 10 — Monetização, depois do MVP funcional
+## 10. Fase 9 — Monetização, depois do MVP funcional
 
 Não implemente anúncios antes de o app estar divertido. Primeiro prove uso.
 
@@ -808,7 +756,7 @@ Ordem recomendada:
 
 ---
 
-## 12. Ordem exata de execução
+## 11. Ordem exata de execução
 
 ```txt
 1. Criar projeto Expo
@@ -840,7 +788,7 @@ Ordem recomendada:
 
 ---
 
-## 13. Decision Log
+## 12. Decision Log
 
 ```txt
 - 2026-07-02: Nome definido como "Comer O Quê?"
@@ -857,7 +805,7 @@ Ordem recomendada:
 
 ---
 
-## 14. Como manter este guia mutável
+## 13. Como manter este guia mutável
 
 Toda vez que uma decisão mudar, adicione no Decision Log.
 
@@ -869,7 +817,7 @@ Atualize o ROADMAP.md com esta nova decisão e ajuste as tasks impactadas, sem a
 
 ---
 
-## 15. Próxima decisão pendente
+## 14. Próxima decisão pendente
 
 Executar as tasks da Fase 1 e depois inicializar o Supabase CLI com migrations.
 

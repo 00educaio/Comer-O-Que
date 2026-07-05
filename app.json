@@ -1,9 +1,12 @@
 {
   "expo": {
-    "name": "comer-o-que",
+    "name": "Comer O Quê?",
+    "description": "O app divertido para indecisos que querem descobrir o que comer.",
     "slug": "comer-o-que",
     "version": "1.0.0",
     "orientation": "portrait",
+    "backgroundColor": "#FFF8EF",
+    "primaryColor": "#E32636",
     "icon": "./assets/images/ComerOQue/app-icon-comer-o-que.png",
     "scheme": "comeroque",
     "userInterfaceStyle": "automatic",
@@ -11,6 +14,19 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.seunome.comeroque",
+      "icon": "./assets/images/ComerOQue/app-icon-comer-o-que.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundColor": "#E32636",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "permissions": [],
+      "blockedPermissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -32,6 +48,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "793f036e-c2cc-43f9-a344-f5cbbf187b43"
+      }
     }
   }
 }
