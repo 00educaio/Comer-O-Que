@@ -83,15 +83,15 @@ const surfaceTones: Record<SurfaceTone, { backgroundColor: string; borderColor: 
   },
   default: {
     backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
   },
   mint: {
     backgroundColor: colors.mint,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
   },
   peach: {
     backgroundColor: colors.peach,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
   },
   soft: {
     backgroundColor: colors.surfaceTinted,
@@ -99,11 +99,11 @@ const surfaceTones: Record<SurfaceTone, { backgroundColor: string; borderColor: 
   },
   sun: {
     backgroundColor: colors.yellow,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
   },
   warm: {
     backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
   },
 };
 
@@ -232,8 +232,8 @@ export function AppButton({
       ]}>
       {isPrimary ? (
         <LinearGradient
-          colors={[colors.primary, colors.primaryStrong, colors.primaryDark]}
-          end={{ x: 1, y: 1 }}
+          colors={[colors.primary, colors.primaryStrong]}
+          end={{ x: 1, y: 0 }}
           start={{ x: 0, y: 0 }}
           style={styles.buttonFill}>
           <Text style={[styles.primaryButtonText, textStyle]}>{title}</Text>
@@ -315,8 +315,8 @@ const styles = StyleSheet.create({
   },
   buttonFrameSecondary: {
     backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
-    borderWidth: 2,
+    borderColor: colors.cardBorderSoft,
+    borderWidth: 1,
   },
   buttonFrameSoft: {
     backgroundColor: colors.surfaceWarm,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   cardFrame: {
     ...shadows.card,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     overflow: 'hidden',
   },
   codeInput: {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   },
   input: {
     ...typography.bodyStrong,
-    backgroundColor: colors.surfaceWarm,
+    backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorderSoft,
     borderRadius: radius.lg,
     borderWidth: 1,
@@ -416,9 +416,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xs,
   },
   sectionTitle: {
-    ...typography.subheading,
+    ...typography.heading,
     color: colors.text,
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   softButtonText: {
     ...typography.button,

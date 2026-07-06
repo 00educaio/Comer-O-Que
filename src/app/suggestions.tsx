@@ -12,8 +12,6 @@ import {
 import { submitAppFeedback } from '@/services/feedbackService';
 import { colors, spacing, typography } from '@/theme/theme';
 
-const suggestionPills = ['Sugestão', 'Problema', 'Elogio'] as const;
-
 export default function SuggestionsScreen() {
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
@@ -57,23 +55,9 @@ export default function SuggestionsScreen() {
           <AppPill label="Caixinha aberta" tone="cream" />
           <Text style={styles.heroEmoji}>💌</Text>
           <Text accessibilityRole="header" style={styles.heroTitle}>
-            Conte o que você quer ver no app.
+            Manda sua ideia.
           </Text>
-          <Text style={styles.heroSubtitle}>
-            Vale sugestão, elogio ou relato de problema. A mensagem fica salva com seu
-            nome para a gente continuar refinando a experiência.
-          </Text>
-          <View style={styles.pillRow}>
-            {suggestionPills.map((pill) => (
-              <AppPill
-                key={pill}
-                label={pill}
-                style={styles.heroTag}
-                textStyle={styles.heroTagText}
-                tone="dark"
-              />
-            ))}
-          </View>
+          <Text style={styles.heroSubtitle}>Sugestão, elogio ou problema.</Text>
         </SurfaceCard>
       </Reveal>
 
@@ -82,7 +66,6 @@ export default function SuggestionsScreen() {
           <FormField
             autoCapitalize="words"
             autoCorrect={false}
-            hint="É com ele que sua mensagem vai ficar registrada."
             label="Seu nome"
             maxLength={80}
             onChangeText={(value) => {
@@ -100,7 +83,6 @@ export default function SuggestionsScreen() {
             autoCapitalize="sentences"
             autoCorrect
             fieldStyle={styles.messageField}
-            hint="Pode mandar uma sugestão, contar um bug ou deixar um elogio."
             label="Sua mensagem"
             maxLength={1200}
             multiline
@@ -113,15 +95,10 @@ export default function SuggestionsScreen() {
                 setSuccessMessage(null);
               }
             }}
-            placeholder="Ex.: Seria legal salvar meu último resultado, ou então a tela X está travando..."
+            placeholder="Escreva sua mensagem..."
             rightLabel={`${message.length}/1200`}
             value={message}
           />
-
-          <SurfaceCard style={styles.noteCard} tone="soft">
-            <Text style={styles.noteTitle}>O que fica salvo</Text>
-            <Text style={styles.noteText}>Apenas seu nome e a mensagem enviada.</Text>
-          </SurfaceCard>
 
           {errorMessage ? (
             <Text accessibilityLiveRegion="polite" style={styles.errorText}>

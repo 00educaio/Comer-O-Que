@@ -402,9 +402,7 @@ export default function MatchRoomScreen() {
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
             <LoadingIllustration />
             <Text style={styles.feedbackTitle}>Preparando a sala...</Text>
-            <Text style={styles.feedbackText}>
-              Estamos buscando o lobby, os votos e os cards da rodada.
-            </Text>
+            <Text style={styles.feedbackText}>Só um instante.</Text>
           </View>
         ) : errorMessage && !room ? (
           <View accessibilityLiveRegion="polite" style={styles.feedbackCard}>
@@ -427,10 +425,6 @@ export default function MatchRoomScreen() {
             <Text style={styles.bigEmoji}>⌛</Text>
             <Text accessibilityRole="header" style={styles.feedbackTitle}>
               Essa sala saiu do forno faz tempo. Crie uma nova.
-            </Text>
-            <Text style={styles.feedbackText}>
-              As salas do ModoMatch expiram depois de 2 horas para manter a rodada
-              fresquinha.
             </Text>
             <View style={styles.buttonGroup}>
               <Link href="/match/create" asChild>
@@ -458,7 +452,7 @@ export default function MatchRoomScreen() {
           ) : room?.status === 'waiting' ? (
           <View style={styles.section}>
             <View style={styles.roomHeaderCard}>
-              <Text style={styles.roomEyebrow}>Sala pronta para convite</Text>
+              <Text style={styles.roomEyebrow}>Código da sala</Text>
               <Text accessibilityRole="header" style={styles.roomCode}>
                 {room.code}
               </Text>
@@ -480,10 +474,11 @@ export default function MatchRoomScreen() {
                 onPress={() => void handleShareInvite()}
                 style={({ pressed }) => [
                   styles.primaryButton,
+                  styles.shareButton,
                   isSharing && styles.buttonDisabled,
                   pressed && styles.buttonPressed,
                 ]}>
-                <Text style={styles.primaryButtonText}>
+                <Text style={[styles.primaryButtonText, styles.shareButtonText]}>
                   {isSharing ? 'Abrindo compartilhamento...' : 'Compartilhar convite'}
                 </Text>
               </Pressable>
@@ -521,7 +516,7 @@ export default function MatchRoomScreen() {
               ) : isCreator ? (
                 <>
                   <Text style={styles.noticeText}>
-                    A dupla está formada. Quando quiser, aperte em começar.
+                    Dupla formada. Pode começar.
                   </Text>
                   <Pressable
                     accessibilityRole="button"
@@ -555,25 +550,31 @@ export default function MatchRoomScreen() {
           <View style={styles.section}>
             <View style={styles.gameHeaderCard}>
               <Text style={styles.roomEyebrow}>Sala {room.code}</Text>
-              <Text accessibilityRole="header" style={styles.cardTitle}>
-                Vote no próximo card
+              <Text
+                accessibilityRole="header"
+                style={[styles.cardTitle, styles.gameTitle]}>
+                Sua vez
               </Text>
-              <Text style={styles.feedbackText}>
-                {votedFoodIds.size}/{items.length} opções já passaram pela sua mão.
+              <Text style={[styles.feedbackText, styles.gameFeedbackText]}>
+                {votedFoodIds.size}/{items.length} cards
               </Text>
               <View
                 accessibilityLabel={`Progresso da rodada: ${voteProgress}%`}
                 accessibilityRole="progressbar"
                 accessibilityValue={{ min: 0, max: 100, now: voteProgress }}
-                style={styles.progressTrack}>
-                <View style={[styles.progressFill, { width: `${voteProgress}%` }]} />
+                style={[styles.progressTrack, styles.gameProgressTrack]}>
+                <View
+                  style={[
+                    styles.progressFill,
+                    styles.gameProgressFill,
+                    { width: `${voteProgress}%` },
+                  ]}
+                />
               </View>
               <Text style={styles.historySummaryText}>
                 {matches.length > 0
-                  ? `${matches.length} match${matches.length > 1 ? 'es' : ''} já saiu${
-                      matches.length > 1 ? 'ram' : ''
-                    } nessa sala.`
-                  : 'Curtam as mesmas comidas para montar o histórico da sala.'}
+                  ? `${matches.length} match${matches.length > 1 ? 'es' : ''}`
+                  : 'Ainda sem match'}
               </Text>
             </View>
 
@@ -592,7 +593,7 @@ export default function MatchRoomScreen() {
                 <Text style={styles.matchFoodName}>{latestMatchFood.name}</Text>
                 <Text style={styles.matchFoodDescription}>
                   {latestMatchFood.description ??
-                    'Os dois curtiram essa opção. A sala continua aberta para render outros matches.'}
+                    'Os dois gostaram dessa opção.'}
                 </Text>
                 {latestMatchAt ? (
                   <Text style={styles.latestMatchMeta}>
@@ -612,7 +613,9 @@ export default function MatchRoomScreen() {
                     styles.latestMatchButton,
                     pressed && styles.buttonPressed,
                   ]}>
-                  <Text style={styles.primaryButtonText}>Ver lugares próximos</Text>
+                  <Text style={styles.latestMatchButtonText}>
+                    Ver lugares próximos
+                  </Text>
                 </Pressable>
               </View>
             ) : null}
@@ -663,7 +666,7 @@ export default function MatchRoomScreen() {
             ) : (
               <View style={styles.noticeCard}>
                 <Text style={styles.noticeText}>
-                  Você já passou por todas as opções. Vamos ver se ainda sai um match!
+                  Você votou em tudo. Aguardando a outra pessoa.
                 </Text>
               </View>
             )}
@@ -706,8 +709,7 @@ export default function MatchRoomScreen() {
                 ))
               ) : (
                 <Text style={styles.feedbackText}>
-                  Ainda não rolou um match em comum. Quando os dois curtirem a mesma comida,
-                  ela aparece aqui.
+                  Os matches aparecem aqui.
                 </Text>
               )}
             </View>
@@ -727,9 +729,7 @@ export default function MatchRoomScreen() {
           <View style={styles.feedbackCard}>
             <ErrorIllustration />
             <Text style={styles.feedbackTitle}>Essa sala ainda não abriu direito</Text>
-            <Text style={styles.feedbackText}>
-              Tente atualizar ou volte para o início do ModoMatch.
-            </Text>
+            <Text style={styles.feedbackText}>Tente novamente.</Text>
             <View style={styles.buttonGroup}>
               <Pressable
                 accessibilityRole="button"
@@ -801,7 +801,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     gap: spacing.md,
     padding: spacing.lg,
   },
@@ -820,20 +820,20 @@ const styles = StyleSheet.create({
   },
   roomHeaderCard: {
     ...shadows.floating,
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
   },
   roomEyebrow: {
     ...typography.label,
-    color: colors.primaryDark,
+    color: 'rgba(255, 255, 255, 0.78)',
     textTransform: 'uppercase',
   },
   roomCode: {
     ...typography.code,
-    color: colors.primary,
+    color: colors.onPrimary,
     marginTop: spacing.sm,
     textAlign: 'center',
   },
@@ -845,8 +845,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   roomMetaChip: {
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
+    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    borderColor: 'rgba(255, 255, 255, 0.22)',
     borderRadius: radius.pill,
     borderWidth: 1,
     paddingHorizontal: spacing.md,
@@ -854,14 +854,14 @@ const styles = StyleSheet.create({
   },
   roomMetaChipText: {
     ...typography.caption,
-    color: colors.text,
+    color: colors.onPrimary,
   },
   participantsCard: {
     ...shadows.card,
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1,
     gap: spacing.md,
     padding: spacing.lg,
   },
@@ -911,10 +911,10 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   noticeCard: {
-    backgroundColor: colors.yellow,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primaryGlow,
+    borderColor: colors.primarySoft,
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
   },
   noticeText: {
@@ -940,7 +940,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceWarm,
     borderColor: colors.cardBorder,
     borderRadius: radius.pill,
-    borderWidth: 2,
+    borderWidth: 1,
     justifyContent: 'center',
     minHeight: 58,
     paddingHorizontal: spacing.xl,
@@ -970,10 +970,10 @@ const styles = StyleSheet.create({
   },
   gameHeaderCard: {
     ...shadows.card,
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1,
     gap: spacing.sm,
     padding: spacing.lg,
   },
@@ -990,21 +990,34 @@ const styles = StyleSheet.create({
   },
   historySummaryText: {
     ...typography.body,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.82)',
+  },
+  gameFeedbackText: {
+    color: 'rgba(255, 255, 255, 0.82)',
+    textAlign: 'left',
+  },
+  gameProgressFill: {
+    backgroundColor: colors.onPrimary,
+  },
+  gameProgressTrack: {
+    backgroundColor: 'rgba(255, 255, 255, 0.24)',
+  },
+  gameTitle: {
+    color: colors.onPrimary,
   },
   latestMatchCard: {
     ...shadows.floating,
     alignItems: 'center',
-    backgroundColor: colors.mint,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     gap: spacing.sm,
     padding: spacing.lg,
   },
   latestMatchEyebrow: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.76)',
     letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
@@ -1024,10 +1037,11 @@ const styles = StyleSheet.create({
   },
   latestMatchMeta: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.76)',
     textAlign: 'center',
   },
   latestMatchButton: {
+    backgroundColor: colors.surfaceRaised,
     marginTop: spacing.md,
     width: '100%',
   },
@@ -1037,7 +1051,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
   },
   foodEyebrow: {
@@ -1096,7 +1110,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1,
     gap: spacing.md,
     padding: spacing.lg,
   },
@@ -1127,19 +1141,19 @@ const styles = StyleSheet.create({
   },
   matchTitle: {
     ...typography.title,
-    color: colors.primary,
+    color: colors.onPrimary,
     marginTop: spacing.md,
     textAlign: 'center',
   },
   matchFoodName: {
     ...typography.heading,
-    color: colors.text,
+    color: colors.onPrimary,
     marginTop: spacing.sm,
     textAlign: 'center',
   },
   matchFoodDescription: {
     ...typography.body,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.82)',
     marginTop: spacing.sm,
     textAlign: 'center',
   },
@@ -1172,6 +1186,18 @@ const styles = StyleSheet.create({
   historyActionText: {
     ...typography.button,
     color: colors.text,
+  },
+  latestMatchButtonText: {
+    ...typography.button,
+    color: colors.primary,
+    textAlign: 'center',
+  },
+  shareButton: {
+    backgroundColor: colors.surfaceRaised,
+    marginTop: spacing.lg,
+  },
+  shareButtonText: {
+    color: colors.primary,
   },
   buttonGroup: {
     gap: spacing.md,

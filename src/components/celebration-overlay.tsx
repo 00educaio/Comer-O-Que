@@ -14,11 +14,11 @@ const PIECE_COUNT = 18;
 
 const confettiColors = [
   colors.primary,
+  colors.primaryStrong,
+  colors.primaryDark,
   colors.yellow,
-  colors.mint,
-  colors.peach,
   colors.coral,
-  colors.pink,
+  colors.onPrimary,
 ] as const;
 
 type CelebrationTone = 'default' | 'interview' | 'match' | 'roulette';
@@ -40,27 +40,31 @@ function getTonePalette(tone: CelebrationTone) {
   switch (tone) {
     case 'interview':
       return {
-        badgeBackground: colors.peach,
-        badgeBorder: colors.primary,
-        accent: colors.primaryDark,
+        badgeBackground: colors.primary,
+        badgeBorder: colors.primaryStrong,
+        accent: colors.onPrimary,
+        message: colors.onPrimary,
       };
     case 'roulette':
       return {
-        badgeBackground: colors.yellow,
-        badgeBorder: colors.warning,
-        accent: colors.primaryDark,
+        badgeBackground: colors.primary,
+        badgeBorder: colors.primaryStrong,
+        accent: colors.onPrimary,
+        message: colors.onPrimary,
       };
     case 'match':
       return {
-        badgeBackground: colors.mint,
-        badgeBorder: colors.success,
-        accent: colors.text,
+        badgeBackground: colors.primary,
+        badgeBorder: colors.primaryStrong,
+        accent: colors.onPrimary,
+        message: colors.onPrimary,
       };
     default:
       return {
-        badgeBackground: colors.primaryGlow,
-        badgeBorder: colors.primary,
-        accent: colors.primaryDark,
+        badgeBackground: colors.primary,
+        badgeBorder: colors.primaryStrong,
+        accent: colors.onPrimary,
+        message: colors.onPrimary,
       };
   }
 }
@@ -357,7 +361,7 @@ export function CelebrationOverlay({
           },
         ]}>
         <Text style={[styles.badgeTitle, { color: palette.accent }]}>{title}</Text>
-        <Text style={styles.badgeMessage}>{message}</Text>
+        <Text style={[styles.badgeMessage, { color: palette.message }]}>{message}</Text>
       </Animated.View>
     </View>
   );

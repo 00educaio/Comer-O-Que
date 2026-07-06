@@ -46,8 +46,8 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: colors.background },
           headerBackButtonDisplayMode: 'minimal',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.surface },
-          headerTintColor: colors.primaryStrong,
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.primary,
           headerTitleAlign: 'center',
           headerTitleStyle: {
             ...typography.button,

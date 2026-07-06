@@ -197,9 +197,7 @@ export default function RouletteScreen() {
             <Text accessibilityRole="header" style={styles.title}>
               Qual é a fome de hoje?
             </Text>
-            <Text style={styles.subtitle}>
-              Escolha uma categoria e deixe a sorte cuidar do cardápio.
-            </Text>
+            <Text style={styles.subtitle}>Escolha uma categoria.</Text>
           </View>
 
           {isLoading ? (
@@ -244,9 +242,18 @@ export default function RouletteScreen() {
                         pressed && styles.cardPressed,
                         isSpinning && styles.cardDisabled,
                       ]}>
-                      <View style={styles.groupHeader}>
+                      <View style={styles.groupMain}>
                         <View style={styles.groupEmojiBubble}>
                           <Text style={styles.groupEmoji}>{group.emoji ?? '🍽️'}</Text>
+                        </View>
+                        <View style={styles.groupCopy}>
+                          <Text
+                            style={[
+                              styles.groupName,
+                              isSelected && styles.groupNameSelected,
+                            ]}>
+                            {group.name}
+                          </Text>
                         </View>
                         <View
                           style={[
@@ -258,23 +265,17 @@ export default function RouletteScreen() {
                               styles.groupBadgeText,
                               isSelected && styles.groupBadgeTextSelected,
                             ]}>
-                            {isSelected ? 'Selecionada' : `${group.foods.length} opções`}
+                            {isSelected ? 'Pronta' : group.foods.length}
                           </Text>
                         </View>
-                      </View>
-                      <View style={styles.groupCopy}>
-                        <Text style={styles.groupName}>{group.name}</Text>
-                        <Text style={styles.groupDescription}>
-                          {group.description ?? 'Uma seleção surpresa para você.'}
+                        <Text
+                          style={[
+                            styles.selectionMark,
+                            isSelected && styles.selectionMarkActive,
+                          ]}>
+                          {isSelected ? '✓' : '›'}
                         </Text>
                       </View>
-                      <Text
-                        style={[
-                          styles.selectionMark,
-                          isSelected && styles.selectionMarkActive,
-                        ]}>
-                        {isSelected ? '✓' : '›'}
-                      </Text>
                     </Pressable>
                   );
                 })}
@@ -286,10 +287,6 @@ export default function RouletteScreen() {
                   <Text style={styles.selectedName}>
                     {selectedGroup.emoji ?? '🍽️'} {selectedGroup.name}
                   </Text>
-                  <Text style={styles.selectedDescription}>
-                    {selectedGroup.description ?? 'Uma seleção pronta para surpreender você.'}
-                  </Text>
-
                   <Pressable
                     accessibilityRole="button"
                     accessibilityState={{ expanded: areOptionsVisible }}
@@ -354,7 +351,7 @@ export default function RouletteScreen() {
                     <View style={styles.readyState}>
                       <Text style={styles.readyEmoji}>✨</Text>
                       <Text style={styles.readyText}>
-                        Tudo pronto. Toque em Girar para descobrir.
+                        Tudo pronto para girar.
                       </Text>
                     </View>
                   )}
@@ -445,39 +442,39 @@ const styles = StyleSheet.create({
   header: {
     ...shadows.floating,
     alignItems: 'center',
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
     paddingBottom: spacing.lg,
   },
   heroBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.primaryGlow,
+    backgroundColor: colors.surfaceRaised,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
   },
   heroBadgeText: {
     ...typography.label,
-    color: colors.primaryDark,
+    color: colors.primary,
     textTransform: 'uppercase',
   },
   modeIllustration: {
-    height: 260,
+    height: 220,
     marginTop: spacing.sm,
     width: '100%',
   },
   title: {
     ...typography.title,
-    color: colors.text,
+    color: colors.onPrimary,
     marginTop: spacing.md,
     textAlign: 'center',
   },
   subtitle: {
     ...typography.body,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.84)',
     marginTop: spacing.sm,
     maxWidth: 440,
     textAlign: 'center',
@@ -488,7 +485,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.xl,
   },
   feedbackTitle: {
@@ -509,17 +506,16 @@ const styles = StyleSheet.create({
   groupCard: {
     ...shadows.card,
     backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
     borderRadius: radius.lg,
-    borderWidth: 2,
-    gap: spacing.md,
-    minHeight: 164,
+    borderWidth: 1,
+    minHeight: 92,
     padding: spacing.md,
   },
   groupCardSelected: {
-    backgroundColor: colors.yellow,
+    backgroundColor: colors.primary,
     borderColor: colors.primary,
-    borderWidth: 3,
+    borderWidth: 1,
   },
   cardPressed: {
     opacity: 0.84,
@@ -528,10 +524,10 @@ const styles = StyleSheet.create({
   cardDisabled: {
     opacity: 0.62,
   },
-  groupHeader: {
+  groupMain: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: spacing.md,
   },
   groupEmojiBubble: {
     alignItems: 'center',
@@ -545,11 +541,14 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   groupCopy: {
-    gap: spacing.xs,
+    flex: 1,
   },
   groupName: {
     ...typography.heading,
     color: colors.text,
+  },
+  groupNameSelected: {
+    color: colors.onPrimary,
   },
   groupDescription: {
     ...typography.body,
@@ -561,38 +560,40 @@ const styles = StyleSheet.create({
     borderColor: colors.cardBorderSoft,
     borderRadius: radius.pill,
     borderWidth: 1,
+    minWidth: 38,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
   },
   groupBadgeSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.surfaceRaised,
   },
   groupBadgeText: {
     ...typography.caption,
     color: colors.textMuted,
   },
   groupBadgeTextSelected: {
-    color: colors.onPrimary,
+    color: colors.primary,
   },
   selectionMark: {
-    alignSelf: 'flex-end',
+    alignSelf: 'center',
     color: colors.textMuted,
     fontSize: 34,
     fontWeight: '900',
-    width: 28,
+    textAlign: 'center',
+    width: 18,
   },
   selectionMarkActive: {
-    color: colors.primary,
+    color: colors.onPrimary,
     fontSize: 24,
   },
   spinCard: {
     ...shadows.floating,
     alignItems: 'center',
     backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     marginTop: spacing.xl,
     padding: spacing.lg,
   },

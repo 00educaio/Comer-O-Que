@@ -15,7 +15,6 @@ import { colors, spacing, typography } from '@/theme/theme';
 import type { MatchFilterSlug } from '@/types/match';
 
 const filterOptions: {
-  description: string;
   emoji: string;
   label: string;
   value: MatchFilterSlug;
@@ -24,31 +23,26 @@ const filterOptions: {
     value: 'tudo',
     label: 'Tudo',
     emoji: '🍽️',
-    description: 'Mistura geral para sair do impasse sem dó.',
   },
   {
     value: 'sobremesa',
     label: 'Sobremesa',
     emoji: '🍰',
-    description: 'Doces, bolos e vontades açucaradas.',
   },
   {
     value: 'fome-grande',
     label: 'Fome grande',
     emoji: '🍔',
-    description: 'Pratos reforçados para fome séria.',
   },
   {
     value: 'regional',
     label: 'Regional',
     emoji: '🇧🇷',
-    description: 'Sabores brasileiros cheios de personalidade.',
   },
   {
     value: 'estrangeira',
     label: 'Estrangeira',
     emoji: '🌍',
-    description: 'Uma volta ao mundo sem sair da mesa.',
   },
 ] as const;
 
@@ -95,12 +89,9 @@ export default function MatchCreateScreen() {
           gradientColors={['#FFA57D', '#E12B2D', '#89131D']}>
           <AppPill label="Criando a rodada" tone="cream" />
           <Text accessibilityRole="header" style={styles.heroTitle}>
-            Monte uma sala bonita e pronta para compartilhar.
+            Crie a sala.
           </Text>
-          <Text style={styles.heroSubtitle}>
-            Escolha um apelido, defina o filtro e o app prepara o lobby com código
-            curto e link.
-          </Text>
+          <Text style={styles.heroSubtitle}>Escolha seu nome e o tipo de fome.</Text>
         </SurfaceCard>
       </Reveal>
 
@@ -109,7 +100,6 @@ export default function MatchCreateScreen() {
           <FormField
             autoCapitalize="words"
             autoCorrect={false}
-            hint="É assim que a outra pessoa vai te ver na sala."
             label="Seu apelido"
             maxLength={32}
             onChangeText={setNickname}
@@ -120,9 +110,6 @@ export default function MatchCreateScreen() {
 
           <View style={styles.filtersBlock}>
             <Text style={styles.fieldLabel}>Filtro da sala</Text>
-            <Text style={styles.fieldHint}>
-              Escolha o clima da rodada antes de convidar.
-            </Text>
 
             <View style={styles.filters}>
               {filterOptions.map((option) => {
@@ -144,13 +131,21 @@ export default function MatchCreateScreen() {
                       tone={isSelected ? 'mint' : 'warm'}>
                       <View style={styles.filterHeader}>
                         <Text style={styles.filterEmoji}>{option.emoji}</Text>
-                        <AppPill
-                          label={isSelected ? 'Selecionado' : 'Toque para usar'}
-                          tone={isSelected ? 'red' : 'cream'}
-                        />
+                        <Text
+                          style={[
+                            styles.filterTitle,
+                            isSelected && styles.filterTitleSelected,
+                          ]}>
+                          {option.label}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.filterCheck,
+                            isSelected && styles.filterCheckSelected,
+                          ]}>
+                          {isSelected ? '✓' : '›'}
+                        </Text>
                       </View>
-                      <Text style={styles.filterTitle}>{option.label}</Text>
-                      <Text style={styles.filterDescription}>{option.description}</Text>
                     </SurfaceCard>
                   </Pressable>
                 );
@@ -185,28 +180,31 @@ const styles = StyleSheet.create({
     color: colors.primaryDark,
     textAlign: 'center',
   },
-  fieldHint: {
-    ...typography.body,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-  },
   fieldLabel: {
     ...typography.subheading,
     color: colors.text,
   },
   filterCard: {
-    minHeight: 132,
+    minHeight: 76,
   },
   filterCardContent: {
-    minHeight: 132,
+    justifyContent: 'center',
+    minHeight: 76,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   filterCardSelected: {
+    backgroundColor: colors.primary,
     borderColor: colors.primaryStrong,
   },
-  filterDescription: {
-    ...typography.body,
+  filterCheck: {
     color: colors.textMuted,
-    marginTop: spacing.xs,
+    fontFamily: typography.heading.fontFamily,
+    fontSize: 28,
+  },
+  filterCheckSelected: {
+    color: colors.onPrimary,
+    fontSize: 20,
   },
   filterEmoji: {
     fontSize: 30,
@@ -214,12 +212,15 @@ const styles = StyleSheet.create({
   filterHeader: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: spacing.md,
   },
   filterTitle: {
-    ...typography.heading,
+    ...typography.subheading,
     color: colors.text,
-    marginTop: spacing.sm,
+    flex: 1,
+  },
+  filterTitleSelected: {
+    color: colors.onPrimary,
   },
   filters: {
     gap: spacing.md,

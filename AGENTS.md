@@ -37,8 +37,8 @@ Antes de iniciar uma tarefa:
 - Stack: **Expo + React Native + TypeScript**.
 - Navegação: **Expo Router**.
 - Backend: **Supabase**.
-- Visual: cartunesco, alegre, vermelho desejo como cor principal, cards grandes,
-  cantos arredondados, sombras leves e poucas animações.
+- Visual: cartunesco, alegre e limpo, com vermelho desejo dominante, cards visuais
+  grandes, cantos arredondados, sombras leves, textos curtos e poucas animações.
 - O MVP principal já foi concluído.
 - O **ModoMatch v1 online** faz parte do produto atual.
 

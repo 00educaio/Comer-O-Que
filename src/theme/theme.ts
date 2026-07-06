@@ -1,37 +1,37 @@
 import { Platform } from 'react-native';
 
 export const colors = {
-  primary: '#E12B2D',
-  primaryStrong: '#C92022',
-  primaryDark: '#89131D',
-  primarySoft: '#FFD1CC',
-  primaryGlow: '#FFE6E1',
-  primaryWash: '#FFF1ED',
-  onPrimary: '#FFF9F6',
-  background: '#FFF8F2',
-  backgroundCanvas: '#FFE2D7',
-  surface: '#FFFCFA',
-  surfaceWarm: '#FFF0E7',
+  primary: '#F0000A',
+  primaryStrong: '#D4000D',
+  primaryDark: '#8E0010',
+  primarySoft: '#FFC7CA',
+  primaryGlow: '#FFE7E8',
+  primaryWash: '#FFF3F3',
+  onPrimary: '#FFFFFF',
+  background: '#F7F3F1',
+  backgroundCanvas: '#F0000A',
+  surface: '#FFFFFF',
+  surfaceWarm: '#F6F1EF',
   surfaceRaised: '#FFFFFF',
-  surfaceTinted: '#FFF5F2',
-  surfaceAccent: '#FFE7DE',
-  surfaceTranslucent: 'rgba(255, 255, 255, 0.84)',
-  text: '#311217',
-  textMuted: '#755057',
-  textSoft: '#AE8086',
-  textInverted: '#FFF7F4',
-  cardBorder: '#5E2127',
-  cardBorderSoft: 'rgba(94, 33, 39, 0.14)',
-  pink: '#FFD0DF',
-  yellow: '#FFD66C',
-  mint: '#D5F2D8',
-  peach: '#FFC3A7',
-  coral: '#FF8768',
-  success: '#227B49',
-  warning: '#B25B18',
-  danger: '#C82939',
-  shadow: 'rgba(113, 28, 39, 0.14)',
-  shadowStrong: 'rgba(113, 28, 39, 0.24)',
+  surfaceTinted: '#FFF6F6',
+  surfaceAccent: '#FFE6E7',
+  surfaceTranslucent: 'rgba(255, 255, 255, 0.9)',
+  text: '#241C1A',
+  textMuted: '#6E625E',
+  textSoft: '#9B8E89',
+  textInverted: '#FFFFFF',
+  cardBorder: '#E2D7D3',
+  cardBorderSoft: 'rgba(54, 31, 27, 0.1)',
+  pink: '#FFD8DB',
+  yellow: '#FFD45C',
+  mint: '#DDF1E1',
+  peach: '#FFD9CA',
+  coral: '#FF775E',
+  success: '#267A49',
+  warning: '#9D541D',
+  danger: '#C71F32',
+  shadow: 'rgba(65, 31, 25, 0.1)',
+  shadowStrong: 'rgba(65, 31, 25, 0.16)',
 } as const;
 
 export const spacing = {
@@ -49,45 +49,45 @@ export const spacing = {
 } as const;
 
 export const radius = {
-  xs: 10,
-  sm: 16,
-  md: 22,
-  lg: 30,
-  xl: 38,
-  hero: 44,
+  xs: 8,
+  sm: 14,
+  md: 20,
+  lg: 26,
+  xl: 30,
+  hero: 34,
   pill: 999,
 } as const;
 
 export const shadows = {
   card: {
-    elevation: 8,
-    shadowColor: colors.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 12,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 20,
-  },
-  floating: {
-    elevation: 14,
-    shadowColor: colors.shadowStrong,
-    shadowOffset: {
-      width: 0,
-      height: 18,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 30,
-  },
-  soft: {
-    elevation: 4,
+    elevation: 3,
     shadowColor: colors.shadow,
     shadowOffset: {
       width: 0,
       height: 6,
     },
-    shadowOpacity: 0.8,
-    shadowRadius: 12,
+    shadowOpacity: 1,
+    shadowRadius: 14,
+  },
+  floating: {
+    elevation: 7,
+    shadowColor: colors.shadowStrong,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 22,
+  },
+  soft: {
+    elevation: 2,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.7,
+    shadowRadius: 8,
   },
 } as const;
 
@@ -109,15 +109,15 @@ export const fontFamilies = {
 export const typography = {
   hero: {
     fontFamily: fontFamilies.display,
-    fontSize: 44,
-    letterSpacing: -0.9,
-    lineHeight: 48,
+    fontSize: 40,
+    letterSpacing: -1,
+    lineHeight: 43,
   },
   title: {
     fontFamily: fontFamilies.display,
-    fontSize: 34,
+    fontSize: 32,
     letterSpacing: -0.8,
-    lineHeight: 38,
+    lineHeight: 35,
   },
   heading: {
     fontFamily: fontFamilies.displayMedium,
@@ -131,13 +131,13 @@ export const typography = {
   },
   body: {
     fontFamily: fontFamilies.body,
-    fontSize: 17,
-    lineHeight: 24,
+    fontSize: 16,
+    lineHeight: 22,
   },
   bodyStrong: {
     fontFamily: fontFamilies.bodyMedium,
-    fontSize: 17,
-    lineHeight: 24,
+    fontSize: 16,
+    lineHeight: 22,
   },
   button: {
     fontFamily: fontFamilies.bodyBlack,
@@ -146,8 +146,8 @@ export const typography = {
   },
   label: {
     fontFamily: fontFamilies.bodyBlack,
-    fontSize: 12,
-    letterSpacing: 1.2,
+    fontSize: 11,
+    letterSpacing: 1.1,
     lineHeight: 16,
   },
   caption: {

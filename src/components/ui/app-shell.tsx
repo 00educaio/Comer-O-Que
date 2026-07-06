@@ -9,7 +9,7 @@ import {
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
 import { AmbientBackground, type AmbientTone } from '@/components/ui/ambient-background';
-import { colors, layout, radius, spacing } from '@/theme/theme';
+import { colors, layout, spacing } from '@/theme/theme';
 
 type ScreenShellProps = {
   ambientStyle?: StyleProp<ViewStyle>;
@@ -49,17 +49,16 @@ export function ScreenShell({
 
 const styles = StyleSheet.create({
   ambient: {
-    borderRadius: radius.hero,
     minHeight: '100%',
-    paddingBottom: spacing.xxl,
-    paddingTop: spacing.sm,
+    paddingBottom: spacing.xl,
+    paddingTop: spacing.md,
   },
   safeArea: {
     alignSelf: 'center',
     flex: 1,
     maxWidth: layout.contentWidth,
-    paddingBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
     width: '100%',
   },
   screen: {

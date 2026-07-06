@@ -182,9 +182,7 @@ export default function InterviewScreen() {
                 <Text accessibilityRole="header" style={styles.title}>
                   Temos um palpite!
                 </Text>
-                <Text style={styles.subtitle}>
-                  Seu gosto falou alto. Agora é só escolher.
-                </Text>
+                <Text style={styles.subtitle}>Seu gosto falou alto.</Text>
               </View>
 
               {recommendations.length > 0 ? (
@@ -246,21 +244,8 @@ export default function InterviewScreen() {
                   <Text style={styles.headerEmoji}>🎤</Text>
                 )}
                 <Text accessibilityRole="header" style={styles.title}>
-                  Conta pra gente
+                  Bora descobrir?
                 </Text>
-                <Text style={styles.subtitle}>
-                  Oito perguntinhas e a indecisão sai do cardápio.
-                </Text>
-                <View style={styles.heroMetaRow}>
-                  <View style={styles.heroMetaChip}>
-                    <Text style={styles.heroMetaChipText}>
-                      {interviewQuestions.length} perguntas
-                    </Text>
-                  </View>
-                  <View style={styles.heroMetaChip}>
-                    <Text style={styles.heroMetaChipText}>resposta rapidinha</Text>
-                  </View>
-                </View>
               </View>
 
               <View style={styles.progressCard}>
@@ -296,7 +281,6 @@ export default function InterviewScreen() {
               </View>
 
               <View style={styles.questionCard}>
-                <Text style={styles.questionEyebrow}>Pergunta da vez</Text>
                 <Text style={styles.question}>{currentQuestion.prompt}</Text>
                 <View style={styles.answerList}>
                   {currentQuestion.options.map((option) => {
@@ -319,19 +303,13 @@ export default function InterviewScreen() {
                         ]}>
                         <Text style={styles.answerEmoji}>{option.emoji}</Text>
                         <Text style={styles.answerText}>{option.label}</Text>
-                        <View
+                        <Text
                           style={[
-                            styles.answerStateBadge,
-                            isSelected && styles.answerStateBadgeSelected,
+                            styles.answerArrow,
+                            isSelected && styles.answerArrowSelected,
                           ]}>
-                          <Text
-                            style={[
-                              styles.answerStateText,
-                              isSelected && styles.answerStateTextSelected,
-                            ]}>
-                            {isSelected ? 'Escolhida' : 'Toque'}
-                          </Text>
-                        </View>
+                          {isSelected ? '✓' : '›'}
+                        </Text>
                       </Pressable>
                     );
                   })}
@@ -398,7 +376,13 @@ function RecommendationCard({
             {food.name}
           </Text>
           {food.description && (
-            <Text style={styles.resultDescription}>{food.description}</Text>
+            <Text
+              style={[
+                styles.resultDescription,
+                isBest && styles.bestResultDescription,
+              ]}>
+              {food.description}
+            </Text>
           )}
         </View>
       </View>
@@ -408,9 +392,12 @@ function RecommendationCard({
         onPress={() => void onOpenMaps(food.searchQuery)}
         style={({ pressed }) => [
           styles.mapsButton,
+          isBest && styles.bestMapsButton,
           pressed && styles.buttonPressed,
         ]}>
-        <Text style={styles.mapsButtonText}>Ver lugares próximos</Text>
+        <Text style={[styles.mapsButtonText, isBest && styles.bestMapsButtonText]}>
+          Ver lugares próximos
+        </Text>
       </Pressable>
     </View>
   );
@@ -448,69 +435,50 @@ const styles = StyleSheet.create({
   },
   heroCard: {
     ...shadows.floating,
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorder,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
   },
   heroBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.primaryGlow,
+    backgroundColor: colors.surfaceRaised,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
   },
   heroBadgeText: {
     ...typography.label,
-    color: colors.primaryDark,
+    color: colors.primary,
     textTransform: 'uppercase',
   },
   headerEmoji: {
     fontSize: 52,
   },
   modeIllustration: {
-    height: 240,
+    height: 210,
     marginTop: spacing.sm,
     width: '100%',
   },
   title: {
     ...typography.title,
-    color: colors.text,
+    color: colors.onPrimary,
     marginTop: spacing.md,
     textAlign: 'center',
   },
   subtitle: {
     ...typography.body,
-    color: colors.textMuted,
+    color: 'rgba(255, 255, 255, 0.84)',
     marginTop: spacing.sm,
     textAlign: 'center',
-  },
-  heroMetaRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    justifyContent: 'center',
-    marginTop: spacing.lg,
-  },
-  heroMetaChip: {
-    backgroundColor: colors.surfaceWarm,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  heroMetaChipText: {
-    ...typography.caption,
-    color: colors.text,
   },
   progressCard: {
     ...shadows.soft,
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorderSoft,
     borderRadius: radius.lg,
-    borderWidth: 1,
+    borderWidth: 0,
     marginBottom: spacing.lg,
     padding: spacing.md,
   },
@@ -541,17 +509,10 @@ const styles = StyleSheet.create({
   questionCard: {
     ...shadows.floating,
     backgroundColor: colors.surface,
-    borderColor: colors.cardBorder,
+    borderColor: colors.cardBorderSoft,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
-  },
-  questionEyebrow: {
-    ...typography.label,
-    color: colors.primaryDark,
-    marginBottom: spacing.sm,
-    textAlign: 'center',
-    textTransform: 'uppercase',
   },
   question: {
     ...typography.subheading,
@@ -568,16 +529,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceWarm,
     borderColor: colors.cardBorderSoft,
     borderRadius: radius.lg,
-    borderWidth: 1,
+    borderWidth: 0,
     flexDirection: 'row',
     minHeight: 74,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
   answerButtonSelected: {
-    backgroundColor: colors.mint,
+    backgroundColor: colors.primaryGlow,
     borderColor: colors.primary,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   answerEmoji: {
     fontSize: 30,
@@ -588,24 +549,14 @@ const styles = StyleSheet.create({
     color: colors.text,
     flex: 1,
   },
-  answerStateBadge: {
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  answerStateBadgeSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  answerStateText: {
-    ...typography.caption,
+  answerArrow: {
     color: colors.textMuted,
+    fontFamily: typography.heading.fontFamily,
+    fontSize: 28,
   },
-  answerStateTextSelected: {
-    color: colors.onPrimary,
+  answerArrowSelected: {
+    color: colors.primary,
+    fontSize: 20,
   },
   backButton: {
     alignItems: 'center',
@@ -635,7 +586,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: 1,
     marginVertical: 'auto',
     padding: spacing.xl,
     width: '100%',
@@ -674,16 +625,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised,
     borderColor: colors.cardBorder,
     borderRadius: radius.lg,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: spacing.lg,
   },
   bestResultCard: {
-    backgroundColor: colors.yellow,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: radius.xl,
   },
   bestLabel: {
     ...typography.label,
-    color: colors.primaryDark,
+    color: colors.onPrimary,
     marginBottom: spacing.md,
   },
   resultHeading: {
@@ -722,11 +674,15 @@ const styles = StyleSheet.create({
   },
   bestResultName: {
     ...typography.heading,
+    color: colors.onPrimary,
   },
   resultDescription: {
     ...typography.body,
     color: colors.textMuted,
     marginTop: spacing.xs,
+  },
+  bestResultDescription: {
+    color: 'rgba(255, 255, 255, 0.82)',
   },
   mapsButton: {
     ...shadows.soft,
@@ -742,6 +698,12 @@ const styles = StyleSheet.create({
     ...typography.button,
     color: colors.onPrimary,
     textAlign: 'center',
+  },
+  bestMapsButton: {
+    backgroundColor: colors.surfaceRaised,
+  },
+  bestMapsButtonText: {
+    color: colors.primary,
   },
   otherTitle: {
     ...typography.subheading,

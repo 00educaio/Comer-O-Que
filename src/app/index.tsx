@@ -1,78 +1,42 @@
 import { Image } from 'expo-image';
 import { router, type Href } from 'expo-router';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ScreenShell } from '@/components/ui/app-shell';
-import {
-  AppPill,
-  Reveal,
-  SectionHeading,
-  SurfaceCard,
-} from '@/components/ui/app-primitives';
-import { colors, radius, shadows, spacing, typography } from '@/theme/theme';
+import { AppPill, Reveal, SurfaceCard } from '@/components/ui/app-primitives';
+import { colors, radius, spacing, typography } from '@/theme/theme';
 
 type HomeOption = {
   badge: string;
   description: string;
-  emoji: string;
-  helper: string;
   href: Href;
+  image: number;
   title: string;
-  tone: 'mint' | 'peach' | 'sun';
 };
 
 const homeOptions: HomeOption[] = [
   {
-    badge: 'Rápido',
+    badge: '8 perguntas',
     title: 'Modo Entrevista',
-    description: 'Perguntas curtas, leitura clara e uma recomendação com cara de resposta certeira.',
-    helper: 'Ótimo para matar a indecisão em poucos toques.',
-    emoji: '🎤',
+    description: 'Responda rapidinho e receba um palpite certeiro.',
     href: '/interview',
-    tone: 'peach',
+    image: require('../../assets/images/ComerOQue/mode-interview-illustration.png'),
   },
   {
-    badge: 'Surpresa',
+    badge: '1 toque',
     title: 'Roleta',
-    description: 'A sorte ganha palco com suspense leve, visual mais apetitoso e resultado em destaque.',
-    helper: 'Perfeito para quando você quer se deixar levar.',
-    emoji: '🎡',
+    description: 'Escolha uma categoria e deixe a sorte decidir.',
     href: '/roulette',
-    tone: 'sun',
+    image: require('../../assets/images/ComerOQue/mode-roulette-illustration.png'),
   },
   {
-    badge: 'Em dupla',
+    badge: '2 pessoas',
     title: 'ModoMatch',
-    description: 'Uma sala charmosa para duas pessoas curtirem os mesmos cards e celebrarem cada match.',
-    helper: 'Feito para decidir junto sem conversa infinita.',
-    emoji: '💞',
+    description: 'Curtam os mesmos pratos e encontrem o match.',
     href: '/match',
-    tone: 'mint',
+    image: require('../../assets/images/ComerOQue/mode-match-coming-soon-illustration.png'),
   },
 ];
-
-const heroHighlights = [
-  'vermelho desejo em destaque',
-  'cards grandes e claros',
-  'fluxos com mais energia',
-] as const;
-
-function getOptionAccentStyle(tone: HomeOption['tone']): ViewStyle {
-  switch (tone) {
-    case 'mint':
-      return { backgroundColor: colors.mint };
-    case 'peach':
-      return { backgroundColor: colors.peach };
-    case 'sun':
-      return { backgroundColor: colors.yellow };
-  }
-}
 
 export default function HomeScreen() {
   return (
@@ -81,62 +45,22 @@ export default function HomeScreen() {
       edges={['top', 'bottom']}
       tone="home">
       <Reveal>
-        <SurfaceCard
-          contentStyle={styles.heroCardContent}
-          gradientColors={['#FF8E66', '#E12B2D', '#87131B']}
-          style={styles.heroCard}>
-          <AppPill label="Seu app anti-indecisão" tone="cream" />
-
-          <View
-            accessible
-            accessibilityLabel="Comer O Quê?"
-            accessibilityRole="header"
-            style={styles.logoWrapper}>
-            <Image
-              accessible={false}
-              contentFit="contain"
-              source={require('../../assets/images/ComerOQue/logo-horizontal-comer-o-que.png')}
-              style={styles.logo}
-            />
-          </View>
-
-          <Text style={styles.heroTitle}>A fome chegou. O app resolve com vontade.</Text>
-          <Text style={styles.heroSubtitle}>
-            O Comer O Quê? agora tem mais presença, mais calor e uma cara de app de comida
-            que abre o apetite antes mesmo da escolha.
-          </Text>
-
-          <View style={styles.highlightRow}>
-            {heroHighlights.map((item) => (
-              <AppPill
-                key={item}
-                label={item}
-                style={styles.highlightPill}
-                textStyle={styles.highlightPillText}
-                tone="dark"
-              />
-            ))}
-          </View>
-
+        <View style={styles.brandHeader}>
           <Image
             accessible={false}
             contentFit="contain"
-            source={require('../../assets/images/ComerOQue/home-hero.png')}
-            style={styles.heroImage}
+            source={require('../../assets/images/ComerOQue/logo-horizontal-comer-o-que.png')}
+            style={styles.logo}
           />
-        </SurfaceCard>
-      </Reveal>
-
-      <Reveal delay={90}>
-        <SectionHeading
-          eyebrow="Modos principais"
-          title="Escolha o clima da fome e deixe o app conduzir a experiência."
-        />
+          <Text accessibilityRole="header" style={styles.pageTitle}>
+            Escolha seu jeito de decidir
+          </Text>
+        </View>
       </Reveal>
 
       <View style={styles.options}>
         {homeOptions.map((option, index) => (
-          <Reveal delay={150 + index * 70} key={option.title}>
+          <Reveal delay={80 + index * 70} key={option.title}>
             <Pressable
               accessibilityHint={option.description}
               accessibilityLabel={option.title}
@@ -146,25 +70,33 @@ export default function HomeScreen() {
                 styles.cardPressable,
                 pressed && styles.cardPressed,
               ]}>
-              <SurfaceCard
-                contentStyle={styles.optionCardContent}
-                style={[styles.optionCard, getOptionAccentStyle(option.tone)]}
-                tone={option.tone}>
-                <View style={styles.cardTopRow}>
-                  <View style={styles.cardEmojiBubble}>
-                    <Text style={styles.cardEmoji}>{option.emoji}</Text>
+              <SurfaceCard contentStyle={styles.modeCardContent} style={styles.modeCard}>
+                <View style={styles.imageFrame}>
+                  <Image
+                    accessible={false}
+                    contentFit="cover"
+                    contentPosition="center"
+                    source={option.image}
+                    style={styles.modeImage}
+                  />
+                  <View style={styles.imageBadge}>
+                    <AppPill
+                      label={option.badge}
+                      style={styles.badge}
+                      textStyle={styles.badgeText}
+                      tone="cream"
+                    />
                   </View>
-                  <AppPill label={option.badge} tone="cream" />
                 </View>
 
-                <Text style={styles.cardTitle}>{option.title}</Text>
-                <Text style={styles.cardDescription}>{option.description}</Text>
-
-                <View style={styles.cardFooter}>
-                  <Text style={styles.cardHelper}>{option.helper}</Text>
-                  <View style={styles.arrowBadge}>
-                    <Text style={styles.arrowText}>Abrir modo</Text>
+                <View style={styles.modeCopy}>
+                  <View style={styles.titleRow}>
+                    <Text style={styles.modeTitle}>{option.title}</Text>
+                    <View style={styles.arrow}>
+                      <Text style={styles.arrowText}>›</Text>
+                    </View>
                   </View>
+                  <Text style={styles.modeDescription}>{option.description}</Text>
                 </View>
               </SurfaceCard>
             </Pressable>
@@ -172,42 +104,25 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      <Reveal delay={390}>
-        <SectionHeading
-          eyebrow="Sugestões"
-          title="Tem uma ideia boa, um elogio ou um bug? A caixinha continua aberta."
-        />
-      </Reveal>
-
-      <Reveal delay={430}>
+      <Reveal delay={320}>
         <Pressable
           accessibilityHint="Abre a área para enviar sugestão, elogio ou problema"
           accessibilityLabel="Abrir sugestões"
           accessibilityRole="button"
           onPress={() => router.push('/suggestions')}
-          style={({ pressed }) => [styles.cardPressable, pressed && styles.cardPressed]}>
-          <SurfaceCard
-            contentStyle={styles.feedbackCardContent}
-            gradientColors={['#FFF5F1', '#FFE5DA']}
-            style={styles.feedbackCard}>
-            <View style={styles.cardTopRow}>
-              <View style={styles.cardEmojiBubble}>
-                <Text style={styles.cardEmoji}>💌</Text>
-              </View>
-              <AppPill label="Fala com a gente" tone="red" />
+          style={({ pressed }) => [
+            styles.cardPressable,
+            pressed && styles.cardPressed,
+          ]}>
+          <SurfaceCard contentStyle={styles.feedbackContent} style={styles.feedbackCard}>
+            <View style={styles.feedbackIcon}>
+              <Text style={styles.feedbackEmoji}>💌</Text>
             </View>
-
-            <Text style={styles.cardTitle}>Abrir caixinha de sugestões</Text>
-            <Text style={styles.cardDescription}>
-              Envie seu nome e uma mensagem com sugestão, elogio ou relato de problema.
-            </Text>
-
-            <View style={styles.cardFooter}>
-              <Text style={styles.cardHelper}>Seu recado vai direto para o Supabase.</Text>
-              <View style={styles.arrowBadge}>
-                <Text style={styles.arrowText}>Enviar mensagem</Text>
-              </View>
+            <View style={styles.feedbackCopy}>
+              <Text style={styles.feedbackTitle}>Tem uma sugestão?</Text>
+              <Text style={styles.feedbackText}>Conta pra gente.</Text>
             </View>
+            <Text style={styles.feedbackArrow}>›</Text>
           </SurfaceCard>
         </Pressable>
       </Reveal>
@@ -216,133 +131,131 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  arrowBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.surfaceRaised,
-    borderColor: colors.cardBorderSoft,
+  arrow: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
   },
   arrowText: {
-    ...typography.caption,
+    color: colors.onPrimary,
+    fontFamily: typography.heading.fontFamily,
+    fontSize: 32,
+    lineHeight: 34,
+    marginTop: -2,
+  },
+  badge: {
+    backgroundColor: colors.surfaceRaised,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  badgeText: {
     color: colors.primaryDark,
-    textTransform: 'uppercase',
   },
-  cardDescription: {
-    ...typography.body,
-    color: colors.textMuted,
-    marginTop: spacing.sm,
-  },
-  cardEmoji: {
-    fontSize: 38,
-  },
-  cardEmojiBubble: {
-    ...shadows.soft,
+  brandHeader: {
     alignItems: 'center',
-    backgroundColor: colors.surfaceTranslucent,
-    borderColor: colors.cardBorderSoft,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    height: 74,
-    justifyContent: 'center',
-    width: 74,
-  },
-  cardFooter: {
-    gap: spacing.sm,
-    marginTop: spacing.lg,
-  },
-  cardHelper: {
-    ...typography.bodyStrong,
-    color: colors.text,
-  },
-  cardPressed: {
-    opacity: 0.94,
-    transform: [{ scale: 0.988 }],
+    paddingHorizontal: spacing.sm,
+    paddingTop: spacing.xs,
   },
   cardPressable: {
     borderRadius: radius.xl,
   },
-  cardTitle: {
-    ...typography.heading,
-    color: colors.text,
-    marginTop: spacing.lg,
-  },
-  cardTopRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  cardPressed: {
+    opacity: 0.92,
+    transform: [{ scale: 0.99 }],
   },
   content: {
-    gap: spacing.xl,
+    gap: spacing.lg,
+  },
+  feedbackArrow: {
+    color: colors.primary,
+    fontFamily: typography.heading.fontFamily,
+    fontSize: 34,
   },
   feedbackCard: {
-    minHeight: 210,
+    backgroundColor: colors.surfaceRaised,
+    borderColor: colors.primarySoft,
   },
-  feedbackCardContent: {
-    minHeight: 210,
-  },
-  heroCard: {
-    ...shadows.floating,
-  },
-  heroCardContent: {
+  feedbackContent: {
     alignItems: 'center',
-    paddingBottom: spacing.xl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-  },
-  heroImage: {
-    aspectRatio: 1122 / 1402,
-    marginTop: spacing.lg,
-    maxWidth: 350,
-    width: '100%',
-  },
-  heroSubtitle: {
-    ...typography.body,
-    color: colors.textInverted,
-    marginTop: spacing.sm,
-    maxWidth: 540,
-    textAlign: 'center',
-  },
-  heroTitle: {
-    ...typography.hero,
-    color: colors.textInverted,
-    marginTop: spacing.md,
-    maxWidth: 540,
-    textAlign: 'center',
-  },
-  highlightPill: {
-    backgroundColor: 'rgba(49, 18, 23, 0.16)',
-    borderColor: 'rgba(255, 255, 255, 0.18)',
-  },
-  highlightPillText: {
-    color: colors.textInverted,
-  },
-  highlightRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: spacing.md,
+    padding: spacing.md,
+  },
+  feedbackCopy: {
+    flex: 1,
+  },
+  feedbackEmoji: {
+    fontSize: 28,
+  },
+  feedbackIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.primaryGlow,
+    borderRadius: radius.md,
+    height: 54,
     justifyContent: 'center',
-    marginTop: spacing.lg,
+    width: 54,
+  },
+  feedbackText: {
+    ...typography.body,
+    color: colors.textMuted,
+  },
+  feedbackTitle: {
+    ...typography.subheading,
+    color: colors.text,
+  },
+  imageBadge: {
+    left: spacing.md,
+    position: 'absolute',
+    top: spacing.md,
+  },
+  imageFrame: {
+    backgroundColor: colors.primary,
+    height: 238,
+    overflow: 'hidden',
   },
   logo: {
     aspectRatio: 3,
     maxWidth: 420,
     width: '100%',
   },
-  logoWrapper: {
-    alignItems: 'center',
-    marginTop: spacing.md,
+  modeCard: {
+    borderColor: colors.cardBorderSoft,
+  },
+  modeCardContent: {
+    padding: 0,
+  },
+  modeCopy: {
+    backgroundColor: colors.surfaceRaised,
+    padding: spacing.lg,
+  },
+  modeDescription: {
+    ...typography.body,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+  },
+  modeImage: {
+    height: '100%',
     width: '100%',
   },
-  optionCard: {
-    minHeight: 230,
-  },
-  optionCardContent: {
-    minHeight: 230,
+  modeTitle: {
+    ...typography.title,
+    color: colors.text,
+    flex: 1,
   },
   options: {
+    gap: spacing.lg,
+  },
+  pageTitle: {
+    ...typography.heading,
+    color: colors.text,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
+  titleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
     gap: spacing.md,
   },
 });
