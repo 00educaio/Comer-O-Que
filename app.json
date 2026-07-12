@@ -14,7 +14,8 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
-      "package": "com.seunome.comeroque",
+      "package": "com.educaio.comeroque",
+      "versionCode": 1,
       "icon": "./assets/images/ComerOQue/app-icon-comer-o-que.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-icon-foreground.png",

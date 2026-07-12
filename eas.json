@@ -1,15 +1,22 @@
 {
+  "cli": {
+    "appVersionSource": "local"
+  },
   "build": {
     "development": {
+      "node": "22.22.2",
       "developmentClient": true,
       "distribution": "internal"
     },
     "preview": {
+      "node": "22.22.2",
       "distribution": "internal",
       "android": {
         "buildType": "apk"
       }
     },
-    "production": {}
+    "production": {
+      "node": "22.22.2"
+    }
   }
 }
